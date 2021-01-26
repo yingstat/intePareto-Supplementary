@@ -1,0 +1,37 @@
+---
+title: "merge technical replicates"
+author: "Yingying Cao"
+date: "2/26/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+### merge technical replicates i.e. different runs for each biological replicate
+Merging BAM files of technical and/or biological replicates can improve the sensitivity of the peak calling by increasing the depth of read coverage. 
+
+```{bash}
+# wild type H3K27ac
+samtools merge ./data/tet2/output/wildtypeH3K27acrep1.bam ./data/tet2/output/SRR925642_sorted.bam ./data/tet2/output/SRR925643_sorted.bam 
+samtools index ./data/tet2/output/wildtypeH3K27acrep1.bam
+samtools merge ./data/tet2/output/wildtypeH3K27me3rep1.bam ./data/tet2/output/SRR925644_sorted.bam ./data/tet2/output/SRR925644_sorted.bam ./data/tet2/output/SRR925646_sorted.bam
+samtools index ./data/tet2/output/wildtypeH3K27me3rep1.bam
+for i  in wildtypeH3K27*.bam; do bamCoverage -b $i -o $i.bw; done
+
+```
+
+```{r, eval=FALSE}
+load("./data/chip_meta.rda")
+# write.csv(chip_meta, file = "./data/chip_meta.csv" ) 
+# chip_meta <- read.csv(file = "./data/chip_meta.csv")
+# chip_meta <- chip_meta[,-1]
+# chip_meta$SRR <- as.character(chip_meta$SRR)
+# chip_meta$mark <- as.character(chip_meta$mark)
+# chip_meta$condition <- as.character(chip_meta$condition)
+# chip_meta$files <- as.character(chip_meta$files)
+# save(chip_meta, file = "./data/chip_meta.rda")
+```
+

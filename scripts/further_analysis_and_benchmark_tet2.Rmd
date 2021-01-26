@@ -1,0 +1,1654 @@
+---
+title: "further_analysis_and_benchmark_tet2"
+author: "Yingying Cao"
+date: "9/20/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## do visualization
+
+### Visualize ChiP-seq distrbution
+
+```{r}
+# BiocManager::install("Guitar")
+#install.packages("./data/Guitar_1.7.0.tar.gz", repos = NULL, type="source")
+library(Guitar)
+library(GenomicAlignments)
+load("./data/chip_meta.rda")
+chip_meta$bedfiles <- gsub("bam", "bed", chip_meta$files)
+chip_meta$bedfiles <- gsub("./data/tet2/output/", "./data/tet2/output/bed/", chip_meta$bedfiles)
+head(chip_meta)
+```
+
+```{r}
+library(GenomicFeatures)
+library(RMariaDB)
+txdb <- makeTxDbFromGFF(file = "./data/Mus_musculus.GRCm38.99.gff3",
+                        format="gff3",
+                        dataSource=NA,
+                        organism=NA,
+                        taxonomyId=NA,
+                        circ_seqs=DEFAULT_CIRC_SEQS,
+                        chrominfo=NULL,
+                        miRBaseBuild=NA,
+                        metadata=NULL,
+                        dbxrefTag = "GeneID")
+# txdb <- makeTxDbFromEnsembl(organism="Mus musculus")
+# txdb<-makeTxDbFromUCSC(genome = "mm10")
+#gc_txdb <- makeGuitarTxdb(txdb)
+gc_txdb<-makeGuitarCoordsFromTxDb(txdb, noBins = 20)
+
+```
+
+
+
+```{r}
+# H3K4me3
+bamalignment_tet2out_H3K4me3<-readGAlignments(chip_meta[chip_meta$condition=="tet2.out"&chip_meta$mark=="H3K4me3",]$files[1])
+bamalignment_wildtype_H3K4Me3 <- readGAlignments(chip_meta[chip_meta$condition=="wild.type"&chip_meta$mark=="H3K4me3",]$files[1])
+feature_mm10_H3K4me3 <- list(bamalignment_tet2out_H3K4me3,bamalignment_wildtype_H3K4Me3)
+
+
+names(feature_mm10_H3K4me3) <- c("tet2.out","wild.type")
+pdf(file = "./ChIP_Distribution_H3K4me3.pdf",  width = 12, height = 5)
+GuitarPlot(gfeatures = feature_mm10_H3K4me3, 
+           GuitarCoordsFromTxDb = gc_txdb,
+           saveToPDFprefix = "NA",
+           includeNeighborDNA =TRUE,
+           rescaleComponent=FALSE)
+dev.off()
+
+# H3K4me1
+bamalignment_tet2out_H3K4me1<-readGAlignments(chip_meta[chip_meta$condition=="tet2.out"&chip_meta$mark=="H3K4me1",]$files[1])
+bamalignment_wildtype_H3K4me1 <- readGAlignments(chip_meta[chip_meta$condition=="wild.type"&chip_meta$mark=="H3K4me1",]$files[1])
+feature_mm10_H3K4me1 <- list(bamalignment_tet2out_H3K4me1,bamalignment_wildtype_H3K4me1)
+
+
+names(feature_mm10_H3K4me1) <- c("tet2.out","wild.type")
+pdf(file = "./ChIP_Distribution_H3K4me1.pdf",  width = 12, height = 5)
+GuitarPlot(gfeatures = feature_mm10_H3K4me1, 
+           GuitarCoordsFromTxDb = gc_txdb,
+           saveToPDFprefix = "NA",
+           includeNeighborDNA =TRUE,
+           rescaleComponent=FALSE)
+dev.off()
+
+# H3K27ac
+bamalignment_tet2out_H3K27ac<-readGAlignments(chip_meta[chip_meta$condition=="tet2.out"&chip_meta$mark=="H3K27ac",]$files[1])
+bamalignment_wildtype_H3K27ac <- readGAlignments(chip_meta[chip_meta$condition=="wild.type"&chip_meta$mark=="H3K27ac",]$files[1])
+feature_mm10_H3K27ac <- list(bamalignment_tet2out_H3K27ac,bamalignment_wildtype_H3K27ac)
+
+
+names(feature_mm10_H3K27ac) <- c("tet2.out","wild.type")
+pdf(file = "./ChIP_Distribution_H3K27ac.pdf",  width = 12, height = 5)
+GuitarPlot(gfeatures = feature_mm10_H3K27ac, 
+           GuitarCoordsFromTxDb = gc_txdb,
+           saveToPDFprefix = "NA",
+           includeNeighborDNA =TRUE,
+           rescaleComponent=FALSE)
+dev.off()
+
+# H3K36me3
+bamalignment_tet2out_H3K36me3<-readGAlignments(chip_meta[chip_meta$condition=="tet2.out"&chip_meta$mark=="H3K36me3",]$files[1])
+bamalignment_wildtype_H3K36me3 <- readGAlignments(chip_meta[chip_meta$condition=="wild.type"&chip_meta$mark=="H3K36me3",]$files[1])
+feature_mm10_H3K36me3 <- list(bamalignment_tet2out_H3K36me3,bamalignment_wildtype_H3K36me3)
+
+
+names(feature_mm10_H3K36me3) <- c("tet2.out","wild.type")
+pdf(file = "./ChIP_Distribution_H3K36me3.pdf",  width = 12, height = 5)
+GuitarPlot(gfeatures = feature_mm10_H3K36me3, 
+           GuitarCoordsFromTxDb = gc_txdb,
+           saveToPDFprefix = "NA",
+           includeNeighborDNA =TRUE,
+           rescaleComponent=FALSE)
+dev.off()
+
+# H3K9me3
+bamalignment_tet2out_H3K9me3<-readGAlignments(chip_meta[chip_meta$condition=="tet2.out"&chip_meta$mark=="H3K9me3",]$files[1])
+bamalignment_wildtype_H3K9me3 <- readGAlignments(chip_meta[chip_meta$condition=="wild.type"&chip_meta$mark=="H3K9me3",]$files[1])
+feature_mm10_H3K9me3 <- list(bamalignment_tet2out_H3K9me3,bamalignment_wildtype_H3K9me3)
+
+
+names(feature_mm10_H3K9me3) <- c("tet2.out","wild.type")
+pdf(file = "./ChIP_Distribution_H3K9me3.pdf",  width = 12, height = 5)
+GuitarPlot(gfeatures = feature_mm10_H3K9me3, 
+           GuitarCoordsFromTxDb = gc_txdb,
+           saveToPDFprefix = "NA",
+           includeNeighborDNA =TRUE,
+           rescaleComponent=FALSE)
+dev.off()
+
+# H3K27me3
+bamalignment_tet2out_H3K27me3<-readGAlignments(chip_meta[chip_meta$condition=="tet2.out"&chip_meta$mark=="H3K27me3",]$files[1])
+bamalignment_wildtype_H3K27me3 <- readGAlignments(chip_meta[chip_meta$condition=="wild.type"&chip_meta$mark=="H3K27me3",]$files[1])
+feature_mm10_H3K27me3 <- list(bamalignment_tet2out_H3K27me3,bamalignment_wildtype_H3K27me3)
+
+
+names(feature_mm10_H3K27me3) <- c("tet2.out","wild.type")
+pdf(file = "./ChIP_Distribution_H3K27me3.pdf",  width = 12, height = 5)
+GuitarPlot(gfeatures = feature_mm10_H3K27me3, 
+           GuitarCoordsFromTxDb = gc_txdb,
+           saveToPDFprefix = "NA",
+           includeNeighborDNA =TRUE,
+           rescaleComponent=FALSE)
+dev.off()
+
+```
+
+
+### using EnrichedHeatmap to visualize the signals
+```{r, eval=FALSE}
+# create bed files of tss
+tpms <- read.csv(file = "./results/tpms_gene.csv")
+load("./data/rna_meta.rda")
+mapping.file <- data.frame(sample = rna_meta$SRR, 
+                           condition = rna_meta$condition)
+colnames(tpms)[which(names(tpms) == mapping.file$sample)] <- paste0(mapping.file$condition,rep(c("REP1","REP2"),2))
+
+ensembl <- useMart("ensembl", dataset="mmusculus_gene_ensembl")
+
+
+N <- data.frame(biomaRt::getBM(attributes=c("ensembl_transcript_id_version",
+                                            "ensembl_gene_id",
+                                            "chromosome_name",
+                                            "start_position",
+                                            "end_position",
+                                            "transcript_start",
+                                            "transcript_end",
+                                            "transcription_start_site",
+                                            "transcript_length",
+                                            "strand"),
+                               filters=c('ensembl_gene_id'),
+                               values = tpms$ens_gene,
+                               mart=ensembl))
+exprsRNA <- merge(N,tpms, by.x = "ensembl_gene_id", by.y="ens_gene")
+
+tss.bed <- exprsRNA[,c("chromosome_name", "transcription_start_site", "transcript_end", "strand", "ensembl_gene_id", "ensembl_transcript_id_version","wild.typeREP1","wild.typeREP2", "tet2.outREP1", "tet2.outREP2", "ext_gene")]
+
+write.table(tss.bed, file="./data/tss.bed", sep="\t", quote=F, row.names=F, col.names=F)
+
+```
+https://bioconductor.org/packages/release/bioc/vignettes/EnrichedHeatmap/inst/doc/EnrichedHeatmap.html#toc_1
+Enriched heatmap is a special type of heatmap which visualizes the enrichment of genomic signals over specific target regions. It is broadly used to visualize e.g. how histone modifications are enriched at transcription start sites.
+ormalizeToMatrix() converts the association between genomic signals (H3K4me3) and targets(tss) into a matrix (actually mat1 is just a normal matrix with several additional attributes). It first splits the extended targets regions (the extension to upstream and downstream is controlled by extend argument) into a list of small windows (the width of the windows is controlled by w), then overlaps genomic signals to these small windows and calculates the value for every small window which is the mean value of genomic signals that intersects with the window (the value corresponds to genomic signals are controlled by value_column and how to calcualte the mean value is controlled by mean_mode.).
+
+Mean mode
+
+When normalizing genomic signals to target regions, upstream and downstream (also target regions themselves if they are included) of the targets are split into small windows. Then genomic signals are overlapped to each window and mean signal for each window is calculated. When a window is not completely covered by the regions for the genomic signales, proper averaging method should be applied to summarize the value in the window.
+
+Depending on different scenarios, EnrichedHeatmap provides three metrics for averaging.
+
+The “w0” method is the weighted mean between the intersected parts and un-intersected parts:
+
+vw0=vwWW+W′
+
+W
+is sum of width of the intersected parts (∑niwi) and W′
+
+is the sum of width for the non-intersected parts.
+
+The “coverage” method is denoted as vc
+
+and is defined as the mean signal averged by the length of the window:
+
+vc=∑nixiwiL
+
+where L
+is the length of the window itself. Note when xi=1, vc
+
+is the mean coverage for the signal regions overlapped in the window.
+
+Following illustrates different settings for mean_mode (note there is a signal region overlapping with other signal regions):
+
+   40      50     20     values in signal regions
+ ++++++   +++    +++++   signal regions
+        30               values in signal regions
+      ++++++             signal regions
+   =================     window (17bp), there are 4bp not overlapping to any signal region.
+     4  6  3      3      overlap
+
+ absolute: (40 + 30 + 50 + 20)/4
+ weighted: (40*4 + 30*6 + 50*3 + 20*3)/(4 + 6 + 3 + 3)
+ w0:       (40*4 + 30*6 + 50*3 + 20*3)/(4 + 6 + 3 + 3 + 4)
+ coverage: (40*4 + 30*6 + 50*3 + 20*3)/17
+
+
+### wild.type enrichedheatmap
+```{r}
+library(EnrichedHeatmap)
+library(rtracklayer)
+library(circlize)
+library(data.table)
+library(biomaRt)
+load("./data/chip_meta.rda")
+chip_meta$bwfiles <- paste0(chip_meta$files,".bw")
+## We start from a BED file with coordinates and load as GRanges:
+tss.bed <- read.table( file="./data/tss.bed")
+tss.bed$mean.wt <- rowMeans(tss.bed[,c("V7","V8")])
+tss.bed$mean.tet2.out <- rowMeans(tss.bed[,c("V9","V10")])
+
+tss.bed <- tss.bed[order(tss.bed$mean.wt, decreasing = T),][1:20000,]
+
+tss.targets <- makeGRangesFromDataFrame(
+  df = tss.bed,
+  seqnames.field = "V1", start.field = "V2", end.field = "V3")
+
+## Say we want to take tss as start and extend it by 3kb in each direction:
+tss.extension <- 6000
+## Extend tss by 3kb in each direction:
+tss.targets_extended <- resize(tss.targets, fix = "start", width = tss.extension)
+
+names(tss.targets_extended) <- tss.bed$V6 
+## Now load the content of the bigwig limited to the regions we are interested in.
+## This is much quicker than loading the entire bigwig and does not consume so much memory:
+wt.H3K27ac.bigwig <- rtracklayer::import(chip_meta[chip_meta$mark=="H3K27ac"&chip_meta$condition=="wild.type",]$bwfiles[1], 
+                                         format = "BigWig", 
+                                         selection = BigWigSelection(tss.targets_extended))
+
+## create the normalizedMatrix that EnrichedHeatmap accepts as input.
+## We use the tss.targets tss (width=1) because normalizeMatrix seems
+## does not allow to turn off its extend= option. Therefore we trick it by simply
+## providing the tss and then let the function extend it by our predefined window size.
+wt.H3K27ac.normMatrix <- normalizeToMatrix(signal = wt.H3K27ac.bigwig, 
+                                           target = resize(tss.targets, fix = "start", width = 1), 
+                                           background = 0, 
+                                           keep = c(0, 0.99),      ## minimal value to the 99th percentile
+                                           target_ratio = 0,
+                                           mean_mode = "w0",       ## see ?EnrichedHeatmap on other options
+                                           value_column = "score", ## = the name of the 4th column of the bigwig
+                                           extend = tss.extension)
+col_fun.H3K27ac = colorRamp2(quantile(wt.H3K27ac.normMatrix, c(0, 0.90)), c("white", "red"))
+
+wt.H3K4me1.bigwig <- rtracklayer::import(chip_meta[chip_meta$mark=="H3K4me1"&chip_meta$condition=="wild.type",]$bwfiles[1], 
+                                         format = "BigWig", 
+                                         selection = BigWigSelection(tss.targets_extended))
+
+## create the normalizedMatrix that EnrichedHeatmap accepts as input.
+## We use the tss.targets tss (width=1) because normalizeMatrix seems
+## does not allow to turn off its extend= option. Therefore we trick it by simply
+## providing the tss and then let the function extend it by our predefined window size.
+wt.H3K4me1.normMatrix <- normalizeToMatrix(signal = wt.H3K4me1.bigwig, 
+                                           target = resize(tss.targets, fix = "start", width = 1), 
+                                           background = 0, 
+                                           keep = c(0, 0.99),      ## minimal value to the 99th percentile
+                                           target_ratio = 0,
+                                           mean_mode = "w0",       ## see ?EnrichedHeatmap on other options
+                                           value_column = "score", ## = the name of the 4th column of the bigwig
+                                           extend = tss.extension)
+col_fun.H3K4me1 = colorRamp2(quantile(wt.H3K4me1.normMatrix, c(0, 0.90)), c("white", "brown"))
+
+wt.H3K4me3.bigwig <- rtracklayer::import(chip_meta[chip_meta$mark=="H3K4me3"&chip_meta$condition=="wild.type",]$bwfiles[1], 
+                                         format = "BigWig", 
+                                         selection = BigWigSelection(tss.targets_extended))
+
+## create the normalizedMatrix that EnrichedHeatmap accepts as input.
+## We use the tss.targets tss (width=1) because normalizeMatrix seems
+## does not allow to turn off its extend= option. Therefore we trick it by simply
+## providing the tss and then let the function extend it by our predefined window size.
+wt.H3K4me3.normMatrix <- normalizeToMatrix(signal = wt.H3K4me3.bigwig, 
+                                           target = resize(tss.targets, fix = "start", width = 1), 
+                                           background = 0, 
+                                           keep = c(0, 0.99),      ## minimal value to the 99th percentile
+                                           target_ratio = 0,
+                                           mean_mode = "w0",       ## see ?EnrichedHeatmap on other options
+                                           value_column = "score", ## = the name of the 4th column of the bigwig
+                                           extend = tss.extension)
+col_fun.H3K4me3 = colorRamp2(quantile(wt.H3K4me3.normMatrix, c(0, 0.90)), c("white", "coral"))
+
+wt.H3K36me3.bigwig <- rtracklayer::import(chip_meta[chip_meta$mark=="H3K36me3"&chip_meta$condition=="wild.type",]$bwfiles[1], 
+                                          format = "BigWig", 
+                                          selection = BigWigSelection(tss.targets_extended))
+
+## create the normalizedMatrix that EnrichedHeatmap accepts as input.
+## We use the tss.targets tss (width=1) because normalizeMatrix seems
+## does not allow to turn off its extend= option. Therefore we trick it by simply
+## providing the tss and then let the function extend it by our predefined window size.
+wt.H3K36me3.normMatrix <- normalizeToMatrix(signal = wt.H3K36me3.bigwig, 
+                                            target = resize(tss.targets, fix = "start", width = 1), 
+                                            background = 0, 
+                                            keep = c(0, 0.99),      ## minimal value to the 99th percentile
+                                            target_ratio = 0,
+                                            mean_mode = "w0",       ## see ?EnrichedHeatmap on other options
+                                            value_column = "score", ## = the name of the 4th column of the bigwig
+                                            extend = tss.extension)
+col_fun.H3K36me3 = colorRamp2(quantile(wt.H3K36me3.normMatrix, c(0, 0.90)), c("white", "purple"))
+
+wt.H3K9me3.bigwig <- rtracklayer::import(chip_meta[chip_meta$mark=="H3K9me3"&chip_meta$condition=="wild.type",]$bwfiles[1], 
+                                         format = "BigWig", 
+                                         selection = BigWigSelection(tss.targets_extended))
+
+## create the normalizedMatrix that EnrichedHeatmap accepts as input.
+## We use the tss.targets tss (width=1) because normalizeMatrix seems
+## does not allow to turn off its extend= option. Therefore we trick it by simply
+## providing the tss and then let the function extend it by our predefined window size.
+wt.H3K9me3.normMatrix <- normalizeToMatrix(signal = wt.H3K9me3.bigwig, 
+                                           target = resize(tss.targets, fix = "start", width = 1), 
+                                           background = 0, 
+                                           keep = c(0, 0.99),      ## minimal value to the 99th percentile
+                                           target_ratio = 0,
+                                           mean_mode = "w0",       ## see ?EnrichedHeatmap on other options
+                                           value_column = "score", ## = the name of the 4th column of the bigwig
+                                           extend = tss.extension)
+col_fun.H3K9me3 = colorRamp2(quantile(wt.H3K9me3.normMatrix, c(0, 0.95)), c("white", "darkgreen"))
+
+wt.H3K27me3.bigwig <- rtracklayer::import(chip_meta[chip_meta$mark=="H3K27me3"&chip_meta$condition=="wild.type",]$bwfiles[1], 
+                                          format = "BigWig", 
+                                          selection = BigWigSelection(tss.targets_extended))
+
+## create the normalizedMatrix that EnrichedHeatmap accepts as input.
+## We use the tss.targets tss (width=1) because normalizeMatrix seems
+## does not allow to turn off its extend= option. Therefore we trick it by simply
+## providing the tss and then let the function extend it by our predefined window size.
+wt.H3K27me3.normMatrix <- normalizeToMatrix(signal = wt.H3K27me3.bigwig, 
+                                            target = resize(tss.targets, fix = "start", width = 1), 
+                                            background = 0, 
+                                            keep = c(0, 0.99),      ## minimal value to the 99th percentile
+                                            target_ratio = 0,
+                                            mean_mode = "w0",       ## see ?EnrichedHeatmap on other options
+                                            value_column = "score", ## = the name of the 4th column of the bigwig
+                                            extend = tss.extension)
+col_fun.H3K27me3 = colorRamp2(quantile(wt.H3K27me3.normMatrix, c(0, 0.95)), c("white", "steelblue"))
+
+
+tpms.wt <- tss.bed[order(tss.bed$mean.wt, decreasing = T),][1:20000,]$mean.wt
+names(tpms.wt) <- tss.bed$V6
+enrHtmp <-   Heatmap(log2(tpms.wt+1), col = c("white","darkorange","darkorange1","darkorange2","darkorange3","darkorange4"), name = "log2(TPM+1)", 
+                     show_row_names = FALSE, width = unit(5, "mm")) +
+  EnrichedHeatmap(wt.H3K27ac.normMatrix,col = col_fun.H3K27ac, name = "H3K27ac",row_order=order(tpms.wt, decreasing = T), column_title = "H3K27ac",   top_annotation = HeatmapAnnotation(lines = anno_enriched(gp = gpar(col = "red", lty = 1),axis_param = list(side = "right", facing = "inside"))))+
+  EnrichedHeatmap(wt.H3K4me1.normMatrix,col = col_fun.H3K4me1, name = "H3K4me1",row_order=order(tpms.wt, decreasing = T),
+                  column_title = "H3K4me1", top_annotation = HeatmapAnnotation(lines = anno_enriched(gp = gpar(col = "brown", lty = 1),axis_param = list(side = "right", facing = "inside"))))+
+  EnrichedHeatmap(wt.H3K4me3.normMatrix,col = col_fun.H3K4me3, name = "H3K4me3",row_order=order(tpms.wt, decreasing = T), column_title = "H3K4me3", top_annotation = HeatmapAnnotation(lines = anno_enriched(gp = gpar(col = "coral", lty = 1),axis_param = list(side = "right", facing = "inside"))))+
+  EnrichedHeatmap(wt.H3K36me3.normMatrix,col = col_fun.H3K36me3, name = "H3K36me3",row_order=order(tpms.wt, decreasing = T), column_title = "H3K36me3", top_annotation = HeatmapAnnotation(lines = anno_enriched(gp = gpar(col = "purple", lty = 1),axis_param = list(side = "right", facing = "inside"))))+
+  EnrichedHeatmap(wt.H3K9me3.normMatrix,col = col_fun.H3K9me3, name = "H3K9me3",row_order=order(tpms.wt, decreasing = T), column_title = "H3K9me3", top_annotation = HeatmapAnnotation(lines = anno_enriched(gp = gpar(col = "darkgreen", lty = 1),axis_param = list(side = "right", facing = "inside"))))+
+  EnrichedHeatmap(wt.H3K27me3.normMatrix,col = col_fun.H3K27me3, name = "H3K27me3",row_order=order(tpms.wt, decreasing = T),
+                  column_title = "H3K27me3", top_annotation = HeatmapAnnotation(lines = anno_enriched(gp = gpar(col = "steelblue", lty = 1),axis_param = list(side = "right", facing = "inside"))))
+
+pdf("./EnrichedHeatmap.pdf", width = 10, height = 8)
+
+## Plot it:
+draw(enrHtmp)
+dev.off() ## close the pdf
+```
+
+
+### tet2.out enrichedheatmap
+```{r}
+library(EnrichedHeatmap)
+library(rtracklayer)
+library(circlize)
+library(data.table)
+library(biomaRt)
+load("./data/chip_meta.rda")
+chip_meta$bwfiles <- paste0(chip_meta$files,".bw")
+## We start from a BED file with coordinates and load as GRanges:
+tss.bed <- read.table( file="./data/tss.bed")
+tss.bed$mean.wt <- rowMeans(tss.bed[,c("V7","V8")])
+tss.bed$mean.tet2.out <- rowMeans(tss.bed[,c("V9","V10")])
+
+tss.bed <- tss.bed[order(tss.bed$mean.tet2.out, decreasing = T),][1:20000,]
+
+tss.targets <- makeGRangesFromDataFrame(
+  df = tss.bed,
+  seqnames.field = "V1", start.field = "V2", end.field = "V3")
+
+## Say we want to take tss as start and extend it by 3kb in each direction:
+tss.extension <- 6000
+## Extend tss by 3kb in each direction:
+tss.targets_extended <- resize(tss.targets, fix = "start", width = tss.extension)
+
+names(tss.targets_extended) <- tss.bed$V6 
+## Now load the content of the bigwig limited to the regions we are interested in.
+## This is much quicker than loading the entire bigwig and does not consume so much memory:
+tet2.out.H3K27ac.bigwig <- rtracklayer::import(chip_meta[chip_meta$mark=="H3K27ac"&chip_meta$condition=="tet2.out",]$bwfiles[1], 
+                                               format = "BigWig", 
+                                               selection = BigWigSelection(tss.targets_extended))
+
+## create the normalizedMatrix that EnrichedHeatmap accepts as input.
+## We use the tss.targets tss (width=1) because normalizeMatrix seems
+## does not allow to turn off its extend= option. Therefore we trick it by simply
+## providing the tss and then let the function extend it by our predefined window size.
+tet2.out.H3K27ac.normMatrix <- normalizeToMatrix(signal = tet2.out.H3K27ac.bigwig, 
+                                                 target = resize(tss.targets, fix = "start", width = 1), 
+                                                 background = 0, 
+                                                 keep = c(0, 0.99),      ## minimal value to the 99th percentile
+                                                 target_ratio = 0,
+                                                 mean_mode = "w0",       ## see ?EnrichedHeatmap on other options
+                                                 value_column = "score", ## = the name of the 4th column of the bigwig
+                                                 extend = tss.extension)
+col_fun.H3K27ac = colorRamp2(quantile(tet2.out.H3K27ac.normMatrix, c(0, 0.90)), c("white", "red"))
+
+tet2.out.H3K4me1.bigwig <- rtracklayer::import(chip_meta[chip_meta$mark=="H3K4me1"&chip_meta$condition=="tet2.out",]$bwfiles[1], 
+                                               format = "BigWig", 
+                                               selection = BigWigSelection(tss.targets_extended))
+
+## create the normalizedMatrix that EnrichedHeatmap accepts as input.
+## We use the tss.targets tss (width=1) because normalizeMatrix seems
+## does not allow to turn off its extend= option. Therefore we trick it by simply
+## providing the tss and then let the function extend it by our predefined window size.
+tet2.out.H3K4me1.normMatrix <- normalizeToMatrix(signal = tet2.out.H3K4me1.bigwig, 
+                                                 target = resize(tss.targets, fix = "start", width = 1), 
+                                                 background = 0, 
+                                                 keep = c(0, 0.99),      ## minimal value to the 99th percentile
+                                                 target_ratio = 0,
+                                                 mean_mode = "w0",       ## see ?EnrichedHeatmap on other options
+                                                 value_column = "score", ## = the name of the 4th column of the bigwig
+                                                 extend = tss.extension)
+col_fun.H3K4me1 = colorRamp2(quantile(tet2.out.H3K4me1.normMatrix, c(0, 0.95)), c("white", "brown"))
+
+tet2.out.H3K4me3.bigwig <- rtracklayer::import(chip_meta[chip_meta$mark=="H3K4me3"&chip_meta$condition=="tet2.out",]$bwfiles[1], 
+                                               format = "BigWig", 
+                                               selection = BigWigSelection(tss.targets_extended))
+
+## create the normalizedMatrix that EnrichedHeatmap accepts as input.
+## We use the tss.targets tss (width=1) because normalizeMatrix seems
+## does not allow to turn off its extend= option. Therefore we trick it by simply
+## providing the tss and then let the function extend it by our predefined window size.
+tet2.out.H3K4me3.normMatrix <- normalizeToMatrix(signal = tet2.out.H3K4me3.bigwig, 
+                                                 target = resize(tss.targets, fix = "start", width = 1), 
+                                                 background = 0, 
+                                                 keep = c(0, 0.99),      ## minimal value to the 99th percentile
+                                                 target_ratio = 0,
+                                                 mean_mode = "w0",       ## see ?EnrichedHeatmap on other options
+                                                 value_column = "score", ## = the name of the 4th column of the bigwig
+                                                 extend = tss.extension)
+col_fun.H3K4me3 = colorRamp2(quantile(tet2.out.H3K4me3.normMatrix, c(0, 0.90)), c("white", "coral"))
+
+tet2.out.H3K36me3.bigwig <- rtracklayer::import(chip_meta[chip_meta$mark=="H3K36me3"&chip_meta$condition=="tet2.out",]$bwfiles[1], 
+                                                format = "BigWig", 
+                                                selection = BigWigSelection(tss.targets_extended))
+
+## create the normalizedMatrix that EnrichedHeatmap accepts as input.
+## We use the tss.targets tss (width=1) because normalizeMatrix seems
+## does not allow to turn off its extend= option. Therefore we trick it by simply
+## providing the tss and then let the function extend it by our predefined window size.
+tet2.out.H3K36me3.normMatrix <- normalizeToMatrix(signal = tet2.out.H3K36me3.bigwig, 
+                                                  target = resize(tss.targets, fix = "start", width = 1), 
+                                                  background = 0, 
+                                                  keep = c(0, 0.99),      ## minimal value to the 99th percentile
+                                                  target_ratio = 0,
+                                                  mean_mode = "w0",       ## see ?EnrichedHeatmap on other options
+                                                  value_column = "score", ## = the name of the 4th column of the bigwig
+                                                  extend = tss.extension)
+col_fun.H3K36me3 = colorRamp2(quantile(tet2.out.H3K36me3.normMatrix, c(0, 0.90)), c("white", "purple"))
+
+tet2.out.H3K9me3.bigwig <- rtracklayer::import(chip_meta[chip_meta$mark=="H3K9me3"&chip_meta$condition=="tet2.out",]$bwfiles[1], 
+                                               format = "BigWig", 
+                                               selection = BigWigSelection(tss.targets_extended))
+
+## create the normalizedMatrix that EnrichedHeatmap accepts as input.
+## We use the tss.targets tss (width=1) because normalizeMatrix seems
+## does not allow to turn off its extend= option. Therefore we trick it by simply
+## providing the tss and then let the function extend it by our predefined window size.
+tet2.out.H3K9me3.normMatrix <- normalizeToMatrix(signal = tet2.out.H3K9me3.bigwig, 
+                                                 target = resize(tss.targets, fix = "start", width = 1), 
+                                                 background = 0, 
+                                                 keep = c(0, 0.99),      ## minimal value to the 99th percentile
+                                                 target_ratio = 0,
+                                                 mean_mode = "w0",       ## see ?EnrichedHeatmap on other options
+                                                 value_column = "score", ## = the name of the 4th column of the bigwig
+                                                 extend = tss.extension)
+col_fun.H3K9me3 = colorRamp2(quantile(tet2.out.H3K9me3.normMatrix, c(0, 0.95)), c("white", "darkgreen"))
+
+tet2.out.H3K27me3.bigwig <- rtracklayer::import(chip_meta[chip_meta$mark=="H3K27me3"&chip_meta$condition=="tet2.out",]$bwfiles[1], 
+                                                format = "BigWig", 
+                                                selection = BigWigSelection(tss.targets_extended))
+
+## create the normalizedMatrix that EnrichedHeatmap accepts as input.
+## We use the tss.targets tss (width=1) because normalizeMatrix seems
+## does not allow to turn off its extend= option. Therefore we trick it by simply
+## providing the tss and then let the function extend it by our predefined window size.
+tet2.out.H3K27me3.normMatrix <- normalizeToMatrix(signal = tet2.out.H3K27me3.bigwig, 
+                                                  target = resize(tss.targets, fix = "start", width = 1), 
+                                                  background = 0, 
+                                                  keep = c(0, 0.99),      ## minimal value to the 99th percentile
+                                                  target_ratio = 0,
+                                                  mean_mode = "w0",       ## see ?EnrichedHeatmap on other options
+                                                  value_column = "score", ## = the name of the 4th column of the bigwig
+                                                  extend = tss.extension)
+col_fun.H3K27me3 = colorRamp2(quantile(tet2.out.H3K27me3.normMatrix, c(0, 0.95)), c("white", "steelblue"))
+
+
+tpms.tet2.out <- tss.bed[order(tss.bed$mean.tet2.out, decreasing = T),][1:20000,]$mean.tet2.out
+names(tpms.tet2.out) <- tss.bed$V6
+enrHtmp <-   Heatmap(log2(tpms.tet2.out+1), col = c("white","darkorange","darkorange1","darkorange2","darkorange3","darkorange4"), name = "log2(TPM+1)", 
+                     show_row_names = FALSE, width = unit(5, "mm")) +
+  EnrichedHeatmap(tet2.out.H3K27ac.normMatrix,col = col_fun.H3K27ac, name = "H3K27ac",row_order=order(tpms.tet2.out, decreasing = T), column_title = "H3K27ac",   top_annotation = HeatmapAnnotation(lines = anno_enriched(gp = gpar(col = "red", lty = 1),axis_param = list(side = "right", facing = "inside"))))+
+  EnrichedHeatmap(tet2.out.H3K4me1.normMatrix,col = col_fun.H3K4me1, name = "H3K4me1",row_order=order(tpms.tet2.out, decreasing = T),
+                  column_title = "H3K4me1", top_annotation = HeatmapAnnotation(lines = anno_enriched(gp = gpar(col = "brown", lty = 1),axis_param = list(side = "right", facing = "inside"))))+
+  EnrichedHeatmap(tet2.out.H3K4me3.normMatrix,col = col_fun.H3K4me3, name = "H3K4me3",row_order=order(tpms.tet2.out, decreasing = T), column_title = "H3K4me3", top_annotation = HeatmapAnnotation(lines = anno_enriched(gp = gpar(col = "coral", lty = 1),axis_param = list(side = "right", facing = "inside"))))+
+  EnrichedHeatmap(tet2.out.H3K36me3.normMatrix,col = col_fun.H3K36me3, name = "H3K36me3",row_order=order(tpms.tet2.out, decreasing = T), column_title = "H3K36me3", top_annotation = HeatmapAnnotation(lines = anno_enriched(gp = gpar(col = "purple", lty = 1),axis_param = list(side = "right", facing = "inside"))))+
+  EnrichedHeatmap(tet2.out.H3K9me3.normMatrix,col = col_fun.H3K9me3, name = "H3K9me3",row_order=order(tpms.tet2.out, decreasing = T), column_title = "H3K9me3", top_annotation = HeatmapAnnotation(lines = anno_enriched(gp = gpar(col = "darkgreen", lty = 1),axis_param = list(side = "right", facing = "inside"))))+
+  EnrichedHeatmap(tet2.out.H3K27me3.normMatrix,col = col_fun.H3K27me3, name = "H3K27me3",row_order=order(tpms.tet2.out, decreasing = T),
+                  column_title = "H3K27me3", top_annotation = HeatmapAnnotation(lines = anno_enriched(gp = gpar(col = "steelblue", lty = 1),axis_param = list(side = "right", facing = "inside"))))
+
+pdf("./EnrichedHeatmaptet2out.pdf", width = 10, height = 8)
+
+## Plot it:
+draw(enrHtmp)
+dev.off() ## close the pdf
+```
+
+
+
+Figure 1 shows the correlation matrix, the color represents the value of correlation coefficients of Spearman's rank correlation of all samples. From this figure we can see that RNAseq (wild.type_REP1, wild.type_REP2, tet2.out_REP1, tet2.out_REP2) positively correlate with active histone modification markers (H3K4me3, H3K27ac, H3K4me1, and H3K36me3), and negatively correlate with repressive histone modification markers (H3K27me3 and H3K9me3). This can confirm our match strategy works well for the match of RNAseq and ChIPseq data on the gene level. 
+
+
+
+
+
+### finctions that will be needed
+
+```{r}
+library(ggplot2)
+library(ggalt)
+library(viridis)
+plotCorrelation <- function(data, x, y, shape=16, size=1, color="red", alpha = 1/density, method = "spearman", grid_size = c(51, 51), bandwidth=NULL, ...){
+  ggplot2::ggplot(data, aes(log2(data[[x]]+1), log2(data[[y]]+1))) +
+    ggplot2::geom_point(shape=shape, size=size, show.legend = FALSE) +
+    # ggalt::stat_bkde2d(aes(fill=.front..), grid_size = grid_size, geom="polygon", bandwidth = bandwidth, ...) +
+    labs(x=x, y= y, title = paste0("R=", round(cor(data[[x]], data[[y]], method = method),digits=3)))+
+    # viridis::scale_fill_viridis()+
+    theme_classic()
+}
+
+goview <- function(data){
+  ggplot2::ggplot(data=data, aes(x=reorder(Description, -p.adjust), y=Count, fill=p.adjust)) +
+    geom_bar(stat="identity")+
+    viridis::scale_fill_viridis(discrete = FALSE, option = "D", begin = 0.6, end = 0)+
+    labs(title="GO enrichment", x ="GO terms", y = "Gene Count", fill = "p.adjust")+
+    theme(plot.title = element_text(hjust = 0.5, size = 12))+
+    facet_wrap(~group)+
+    coord_flip()+
+    theme_minimal()
+}
+goview <- function(data){
+  ggplot2::ggplot(data=data, aes(x=reorder(term.name, -p.value), y=overlap.size, fill=p.value)) +
+    geom_bar(stat="identity")+
+    viridis::scale_fill_viridis(discrete = FALSE, option = "D", begin = 0.6, end = 0)+
+    labs(title="GO enrichment", x ="GO terms", y = "Gene Count", fill = "p.value")+
+    theme(plot.title = element_text(hjust = 0.5, size = 12))+
+    coord_flip()+
+    theme_minimal()
+}
+```
+
+
+### 1. rna-chip correaltion
+```{r, fig.height=8, fig.width=8}
+tet2.res <- readRDS("./data/tet2.res.rds")
+tet2.matched.data <- tet2.res$matched.data
+rownames(tet2.matched.data) <- tet2.matched.data$external_gene_name
+tet2.matched.data <- tet2.matched.data[,-1]
+tet2.matched.data <- tet2.matched.data[rowSums(tet2.matched.data>5) > 10,]
+tet2.matched.data <- tet2.matched.data[,-grep("^none_HM", colnames(tet2.matched.data))]
+
+tet2.cor.res <- cor(tet2.matched.data, method = "spearman")
+#tet2.cor.res <- round(tet2.cor.res,2)
+library(ComplexHeatmap)
+library(circlize)
+cols <- colorRampPalette(c("darkblue","white","brown"))(20)
+
+pdf("../../figures/tet2_cor_matrix.pdf", width = 6.3, height = 6.3)
+Heatmap(tet2.cor.res,
+        col = circlize::colorRamp2(seq(from=-1, to=1, length.out = 20), cols), 
+        show_row_names=TRUE,
+        column_names_max_height = unit(6, "cm"),
+        column_names_gp = gpar(fontsize = 8),
+        row_names_max_width = unit(6, "cm"),
+        row_names_gp = gpar(fontsize = 8),
+        heatmap_legend_param = list(title="Cor", color_bar="continuous" ))
+dev.off()
+
+jpeg("../../figures/tet2_cor_matrix.jpeg", width = 170, height = 150,units = "mm" , res = 700)
+Heatmap(tet2.cor.res,
+        col = circlize::colorRamp2(seq(from=-1, to=1, length.out = 20), cols), 
+        show_row_names=TRUE,
+        column_names_max_height = unit(6, "cm"),
+        column_names_gp = gpar(fontsize = 8),
+        row_names_max_width = unit(6, "cm"),
+        row_names_gp = gpar(fontsize = 8),
+        heatmap_legend_param = list(title="Cor", color_bar="continuous" ))
+dev.off()
+
+
+Heatmap(tet2.cor.res,
+        col = circlize::colorRamp2(seq(from=-1, to=1, length.out = 20), cols), 
+        show_row_names=TRUE,
+        column_names_max_height = unit(6, "cm"),
+        column_names_gp = gpar(fontsize = 8),
+        row_names_max_width = unit(6, "cm"),
+        row_names_gp = gpar(fontsize = 8),
+        heatmap_legend_param = list(title="Cor", color_bar="continuous" ))
+
+```
+#### 1.1 correlation of RNA-Seq and H3K4me1
+```{r, fig.width=5, fig.height=5}
+plotCorrelation(data = tet2.matched.data, x = "tet2.out_REP1", y = "H3K4me1_HM_tet2.out_REP2")
+#Lab.palette <- colorRampPalette(c("white", "orange", "red"), space = "Lab")
+Lab.palette <- colorRampPalette(c("white", blues9), space = "Lab")
+smoothScatter(log2(tet2.matched.data$tet2.out_REP1+1), 
+              log2(tet2.matched.data$H3K4me1_HM_tet2.out_REP2+1),
+              xlab = "", ylab = "",
+              colramp = Lab.palette)
+mtext(side=1, text="RNA-Seq", line=2.3, cex = 0.8)
+mtext(side=2, text="ChIP-Seq of H3K4me1", line=2.3, cex = 0.8)
+lo <- lowess(log2(tet2.matched.data$H3K4me1_HM_tet2.out_REP2+1)~log2(tet2.matched.data$tet2.out_REP1+1))
+lines(lo, col='red', lwd=1.5)
+pdf("../../figures/RNAseq-H3K4me1.pdf", width = 4.3, height = 4.7)
+Lab.palette <- colorRampPalette(c("white", blues9), space = "Lab")
+smoothScatter(log2(tet2.matched.data$tet2.out_REP1+1), 
+              log2(tet2.matched.data$H3K4me1_HM_tet2.out_REP2+1),
+              xlab = "", ylab = "",
+              colramp = Lab.palette)
+mtext(side=1, text="RNA-Seq", line=2.3, cex = 0.8)
+mtext(side=2, text="ChIP-Seq of H3K4me1", line=2.3, cex = 0.8)
+lo <- lowess(log2(tet2.matched.data$H3K4me1_HM_tet2.out_REP2+1)~log2(tet2.matched.data$tet2.out_REP1+1))
+lines(lo, col='red', lwd=1.5)
+
+dev.off()
+
+jpeg("../../figures/RNAseq-H3K4me1.jpeg", width = 2700, height = 2700,  res = 700)
+Lab.palette <- colorRampPalette(c("white", blues9), space = "Lab")
+smoothScatter(log2(tet2.matched.data$tet2.out_REP1+1), 
+              log2(tet2.matched.data$H3K4me1_HM_tet2.out_REP2+1),
+              xlab = "", ylab = "",
+              colramp = Lab.palette)
+mtext(side=1, text="RNA-Seq", line=2.3, cex = 0.8)
+mtext(side=2, text="ChIP-Seq of H3K4me1", line=2.3, cex = 0.8)
+lo <- lowess(log2(tet2.matched.data$H3K4me1_HM_tet2.out_REP2+1)~log2(tet2.matched.data$tet2.out_REP1+1))
+lines(lo, col='red', lwd=1.5)
+
+dev.off()
+```
+#### 1.2 correlation of RNA-Seq and H3K4me3
+```{r, fig.width=5, fig.height=5}
+plotCorrelation(data = tet2.matched.data, x = "tet2.out_REP1", y = "H3K4me3_HM_tet2.out_REP2")
+#Lab.palette <- colorRampPalette(c("white", "orange", "red"), space = "Lab")
+Lab.palette <- colorRampPalette(c("white", blues9), space = "Lab")
+smoothScatter(log2(tet2.matched.data$tet2.out_REP1+1), 
+              log2(tet2.matched.data$H3K4me3_HM_tet2.out_REP2+1),
+              xlab = "", ylab = "",
+              colramp = Lab.palette)
+mtext(side=1, text="RNA-Seq", line=2.3, cex = 0.8)
+mtext(side=2, text="ChIP-Seq of H3K4me3", line=2.3, cex = 0.8)
+lo <- lowess(log2(tet2.matched.data$H3K4me3_HM_tet2.out_REP2+1)~log2(tet2.matched.data$tet2.out_REP1+1))
+lines(lo, col='red', lwd=1.5)
+pdf("../../figures/RNAseq-H3K4me3.pdf", width = 4.3, height = 4.7)
+Lab.palette <- colorRampPalette(c("white", blues9), space = "Lab")
+smoothScatter(log2(tet2.matched.data$tet2.out_REP1+1), 
+              log2(tet2.matched.data$H3K4me3_HM_tet2.out_REP2+1),
+              xlab = "", ylab = "",
+              colramp = Lab.palette)
+mtext(side=1, text="RNA-Seq", line=2.3, cex = 0.8)
+mtext(side=2, text="ChIP-Seq of H3K4me3", line=2.3, cex = 0.8)
+lo <- lowess(log2(tet2.matched.data$H3K4me3_HM_tet2.out_REP2+1)~log2(tet2.matched.data$tet2.out_REP1+1))
+lines(lo, col='red', lwd=1.5)
+
+dev.off()
+
+jpeg("../../figures/RNAseq-H3K4me3.jpeg", width = 2700, height = 2700,  res = 700)
+Lab.palette <- colorRampPalette(c("white", blues9), space = "Lab")
+smoothScatter(log2(tet2.matched.data$tet2.out_REP1+1), 
+              log2(tet2.matched.data$H3K4me3_HM_tet2.out_REP2+1),
+              xlab = "", ylab = "",
+              colramp = Lab.palette)
+mtext(side=1, text="RNA-Seq", line=2.3, cex = 0.8)
+mtext(side=2, text="ChIP-Seq of H3K4me3", line=2.3, cex = 0.8)
+lo <- lowess(log2(tet2.matched.data$H3K4me3_HM_tet2.out_REP2+1)~log2(tet2.matched.data$tet2.out_REP1+1))
+lines(lo, col='red', lwd=1.5)
+
+dev.off()
+```
+#### 1.3 correlation of RNA-Seq and H3K27ac
+```{r, fig.width=5, fig.height=5}
+plotCorrelation(data = tet2.matched.data, x = "tet2.out_REP1", y = "H3K27ac_HM_tet2.out_REP2")
+#Lab.palette <- colorRampPalette(c("white", "orange", "red"), space = "Lab")
+Lab.palette <- colorRampPalette(c("white", blues9), space = "Lab")
+smoothScatter(log2(tet2.matched.data$tet2.out_REP1+1), 
+              log2(tet2.matched.data$H3K27ac_HM_tet2.out_REP2+1),
+              xlab = "", ylab = "",
+              colramp = Lab.palette)
+mtext(side=1, text="RNA-Seq", line=2.3, cex = 0.8)
+mtext(side=2, text="ChIP-Seq of H3K27ac", line=2.3, cex = 0.8)
+lo <- lowess(log2(tet2.matched.data$H3K27ac_HM_tet2.out_REP2+1)~log2(tet2.matched.data$tet2.out_REP1+1))
+lines(lo, col='red', lwd=1.5)
+pdf("../../figures/RNAseq-H3K27ac.pdf", width = 4.3, height = 4.7)
+Lab.palette <- colorRampPalette(c("white", blues9), space = "Lab")
+smoothScatter(log2(tet2.matched.data$tet2.out_REP1+1), 
+              log2(tet2.matched.data$H3K27ac_HM_tet2.out_REP2+1),
+              xlab = "", ylab = "",
+              colramp = Lab.palette)
+mtext(side=1, text="RNA-Seq", line=2.3, cex = 0.8)
+mtext(side=2, text="ChIP-Seq of H3K27ac", line=2.3, cex = 0.8)
+lo <- lowess(log2(tet2.matched.data$H3K27ac_HM_tet2.out_REP2+1)~log2(tet2.matched.data$tet2.out_REP1+1))
+lines(lo, col='red', lwd=1.5)
+
+dev.off()
+
+jpeg("../../figures/RNAseq-H3K27ac.jpeg", width = 2700, height = 2700,  res = 700)
+Lab.palette <- colorRampPalette(c("white", blues9), space = "Lab")
+smoothScatter(log2(tet2.matched.data$tet2.out_REP1+1), 
+              log2(tet2.matched.data$H3K27ac_HM_tet2.out_REP2+1),
+              xlab = "", ylab = "",
+              colramp = Lab.palette)
+mtext(side=1, text="RNA-Seq", line=2.3, cex = 0.8)
+mtext(side=2, text="ChIP-Seq of H3K27ac", line=2.3, cex = 0.8)
+lo <- lowess(log2(tet2.matched.data$H3K27ac_HM_tet2.out_REP2+1)~log2(tet2.matched.data$tet2.out_REP1+1))
+lines(lo, col='red', lwd=1.5)
+
+dev.off()
+```
+
+#### 1.4 correlation of RNA-Seq and H3K36me3
+```{r, fig.width=5, fig.height=5}
+plotCorrelation(data = tet2.matched.data, x = "tet2.out_REP1", y = "H3K36me3_HM_tet2.out_REP2")
+#Lab.palette <- colorRampPalette(c("white", "orange", "red"), space = "Lab")
+Lab.palette <- colorRampPalette(c("white", blues9), space = "Lab")
+smoothScatter(log2(tet2.matched.data$tet2.out_REP1+1), 
+              log2(tet2.matched.data$H3K36me3_HM_tet2.out_REP2+1),
+              xlab = "", ylab = "",
+              colramp = Lab.palette)
+mtext(side=1, text="RNA-Seq", line=2.3, cex = 0.8)
+mtext(side=2, text="ChIP-Seq of H3K36me3", line=2.3, cex = 0.8)
+lo <- lowess(log2(tet2.matched.data$H3K36me3_HM_tet2.out_REP2+1)~log2(tet2.matched.data$tet2.out_REP1+1))
+lines(lo, col='red', lwd=1.5)
+pdf("../../figures/RNAseq-H3K36me3.pdf", width = 4.3, height = 4.7)
+Lab.palette <- colorRampPalette(c("white", blues9), space = "Lab")
+smoothScatter(log2(tet2.matched.data$tet2.out_REP1+1), 
+              log2(tet2.matched.data$H3K36me3_HM_tet2.out_REP2+1),
+              xlab = "", ylab = "",
+              colramp = Lab.palette)
+mtext(side=1, text="RNA-Seq", line=2.3, cex = 0.8)
+mtext(side=2, text="ChIP-Seq of H3K36me3", line=2.3, cex = 0.8)
+lo <- lowess(log2(tet2.matched.data$H3K36me3_HM_tet2.out_REP2+1)~log2(tet2.matched.data$tet2.out_REP1+1))
+lines(lo, col='red', lwd=1.5)
+
+dev.off()
+
+jpeg("../../figures/RNAseq-H3K36me3.jpeg", width = 2700, height = 2700,  res = 700)
+Lab.palette <- colorRampPalette(c("white", blues9), space = "Lab")
+smoothScatter(log2(tet2.matched.data$tet2.out_REP1+1), 
+              log2(tet2.matched.data$H3K36me3_HM_tet2.out_REP2+1),
+              xlab = "", ylab = "",
+              colramp = Lab.palette)
+mtext(side=1, text="RNA-Seq", line=2.3, cex = 0.8)
+mtext(side=2, text="ChIP-Seq of H3K36me3", line=2.3, cex = 0.8)
+lo <- lowess(log2(tet2.matched.data$H3K36me3_HM_tet2.out_REP2+1)~log2(tet2.matched.data$tet2.out_REP1+1))
+lines(lo, col='red', lwd=1.5)
+
+dev.off()
+```
+
+
+
+#### 1.5 correlation of RNA-Seq and H3K9me3
+
+```{r, fig.width=5, fig.height=5}
+plotCorrelation(data = tet2.matched.data, x = "tet2.out_REP1", y = "H3K9me3_HM_tet2.out_REP1")
+#Lab.palette <- colorRampPalette(c("white", "orange", "red"), space = "Lab")
+Lab.palette <- colorRampPalette(c("white", blues9), space = "Lab")
+smoothScatter(log2(tet2.matched.data$tet2.out_REP1+1), 
+              log2(tet2.matched.data$H3K9me3_HM_tet2.out_REP1+1),
+              xlab = "", ylab = "",
+              colramp = Lab.palette)
+mtext(side=1, text="RNA-Seq", line=2.3, cex = 0.8)
+mtext(side=2, text="ChIP-Seq of H3K9me3", line=2.3, cex = 0.8)
+lo <- lowess(log2(tet2.matched.data$H3K9me3_HM_tet2.out_REP1+1)~log2(tet2.matched.data$tet2.out_REP1+1))
+lines(lo, col='red', lwd=1.5)
+pdf("../../figures/RNAseq-H3K9me3.pdf", width = 4.3, height = 4.7)
+Lab.palette <- colorRampPalette(c("white", blues9), space = "Lab")
+smoothScatter(log2(tet2.matched.data$tet2.out_REP1+1), 
+              log2(tet2.matched.data$H3K9me3_HM_tet2.out_REP1+1),
+              xlab = "", ylab = "",
+              colramp = Lab.palette)
+mtext(side=1, text="RNA-Seq", line=2.3, cex = 0.8)
+mtext(side=2, text="ChIP-Seq of H3K9me3", line=2.3, cex = 0.8)
+lo <- lowess(log2(tet2.matched.data$H3K9me3_HM_tet2.out_REP1+1)~log2(tet2.matched.data$tet2.out_REP1+1))
+lines(lo, col='red', lwd=1.5)
+
+dev.off()
+
+jpeg("../../figures/RNAseq-H3K9me3.jpeg", width = 2700, height = 2700,  res = 700)
+Lab.palette <- colorRampPalette(c("white", blues9), space = "Lab")
+smoothScatter(log2(tet2.matched.data$tet2.out_REP1+1), 
+              log2(tet2.matched.data$H3K9me3_HM_tet2.out_REP1+1),
+              xlab = "", ylab = "",
+              colramp = Lab.palette)
+mtext(side=1, text="RNA-Seq", line=2.3, cex = 0.8)
+mtext(side=2, text="ChIP-Seq of H3K9me3", line=2.3, cex = 0.8)
+lo <- lowess(log2(tet2.matched.data$H3K9me3_HM_tet2.out_REP1+1)~log2(tet2.matched.data$tet2.out_REP1+1))
+lines(lo, col='red', lwd=1.5)
+
+dev.off()
+```
+
+
+#### 1.6 correlation of RNA-Seq and H3K27me3
+```{r, fig.width=5, fig.height=5}
+plotCorrelation(data = tet2.matched.data, x = "tet2.out_REP1", y = "H3K27me3_HM_tet2.out_REP1")
+#Lab.palette <- colorRampPalette(c("white", "orange", "red"), space = "Lab")
+Lab.palette <- colorRampPalette(c("white", blues9), space = "Lab")
+smoothScatter(log2(tet2.matched.data$tet2.out_REP1+1), 
+              log2(tet2.matched.data$H3K27me3_HM_tet2.out_REP1+1),
+              xlab = "", ylab = "",
+              colramp = Lab.palette)
+mtext(side=1, text="RNA-Seq", line=2.3, cex = 0.8)
+mtext(side=2, text="ChIP-Seq of H3K27me3", line=2.3, cex = 0.8)
+lo <- lowess(log2(tet2.matched.data$H3K27me3_HM_tet2.out_REP1+1)~log2(tet2.matched.data$tet2.out_REP1+1))
+lines(lo, col='red', lwd=1.5)
+pdf("../../figures/RNAseq-H3K27me3.pdf", width = 4.3, height = 4.7)
+Lab.palette <- colorRampPalette(c("white", blues9), space = "Lab")
+smoothScatter(log2(tet2.matched.data$tet2.out_REP1+1), 
+              log2(tet2.matched.data$H3K27me3_HM_tet2.out_REP1+1),
+              xlab = "", ylab = "",
+              colramp = Lab.palette)
+mtext(side=1, text="RNA-Seq", line=2.3, cex = 0.8)
+mtext(side=2, text="ChIP-Seq of H3K27me3", line=2.3, cex = 0.8)
+lo <- lowess(log2(tet2.matched.data$H3K27me3_HM_tet2.out_REP1+1)~log2(tet2.matched.data$tet2.out_REP1+1))
+lines(lo, col='red', lwd=1.5)
+
+dev.off()
+
+jpeg("../../figures/RNAseq-H3K27me3.jpeg", width = 2700, height = 2700,  res = 700)
+Lab.palette <- colorRampPalette(c("white", blues9), space = "Lab")
+smoothScatter(log2(tet2.matched.data$tet2.out_REP1+1), 
+              log2(tet2.matched.data$H3K27me3_HM_tet2.out_REP1+1),
+              xlab = "", ylab = "",
+              colramp = Lab.palette)
+mtext(side=1, text="RNA-Seq", line=2.3, cex = 0.8)
+mtext(side=2, text="ChIP-Seq of H3K27me3", line=2.3, cex = 0.8)
+lo <- lowess(log2(tet2.matched.data$H3K27me3_HM_tet2.out_REP1+1)~log2(tet2.matched.data$tet2.out_REP1+1))
+lines(lo, col='red', lwd=1.5)
+
+dev.off()
+```
+
+
+#### combined figure abouve
+
+```{r}
+jpeg("../../figures/RNAseq-ChIPseq-cor.jpeg", width = 170, height = 100,units = "mm" , res = 500)
+par(mfrow=c(2,3))
+par(mar = c(3, 3, 1.5, 1))
+Lab.palette <- colorRampPalette(c("white", blues9), space = "Lab")
+smoothScatter(log2(tet2.matched.data$tet2.out_REP1+1), 
+              log2(tet2.matched.data$H3K4me1_HM_tet2.out_REP2+1),
+              xlab = "", ylab = "",
+              colramp = Lab.palette)
+mtext(side=1, text="RNA-Seq", line=2, cex = 0.6)
+mtext(side=2, text="ChIP-Seq of H3K4me1", line=2, cex = 0.6)
+lo <- lowess(log2(tet2.matched.data$H3K4me1_HM_tet2.out_REP2+1)~log2(tet2.matched.data$tet2.out_REP1+1))
+lines(lo, col='red', lwd=1.5)
+
+smoothScatter(log2(tet2.matched.data$tet2.out_REP1+1), 
+              log2(tet2.matched.data$H3K4me3_HM_tet2.out_REP2+1),
+              xlab = "", ylab = "",
+              colramp = Lab.palette)
+mtext(side=1, text="RNA-Seq", line=2, cex = 0.6)
+mtext(side=2, text="ChIP-Seq of H3K4me3", line=2, cex = 0.6)
+lo <- lowess(log2(tet2.matched.data$H3K4me3_HM_tet2.out_REP2+1)~log2(tet2.matched.data$tet2.out_REP1+1))
+lines(lo, col='red', lwd=1.5)
+
+smoothScatter(log2(tet2.matched.data$tet2.out_REP1+1), 
+              log2(tet2.matched.data$H3K27ac_HM_tet2.out_REP2+1),
+              xlab = "", ylab = "",
+              colramp = Lab.palette)
+mtext(side=1, text="RNA-Seq", line=2, cex = 0.6)
+mtext(side=2, text="ChIP-Seq of H3K27ac", line=2, cex = 0.6)
+lo <- lowess(log2(tet2.matched.data$H3K27ac_HM_tet2.out_REP2+1)~log2(tet2.matched.data$tet2.out_REP1+1))
+lines(lo, col='red', lwd=1.5)
+
+smoothScatter(log2(tet2.matched.data$tet2.out_REP1+1), 
+              log2(tet2.matched.data$H3K36me3_HM_tet2.out_REP2+1),
+              xlab = "", ylab = "",
+              colramp = Lab.palette)
+mtext(side=1, text="RNA-Seq", line=2, cex = 0.6)
+mtext(side=2, text="ChIP-Seq of H3K36me3", line=2, cex = 0.6)
+lo <- lowess(log2(tet2.matched.data$H3K36me3_HM_tet2.out_REP2+1)~log2(tet2.matched.data$tet2.out_REP1+1))
+lines(lo, col='red', lwd=1.5)
+
+smoothScatter(log2(tet2.matched.data$tet2.out_REP1+1), 
+              log2(tet2.matched.data$H3K9me3_HM_tet2.out_REP1+1),
+              xlab = "", ylab = "",
+              colramp = Lab.palette)
+mtext(side=1, text="RNA-Seq", line=2, cex = 0.6)
+mtext(side=2, text="ChIP-Seq of H3K9me3", line=2, cex = 0.6)
+lo <- lowess(log2(tet2.matched.data$H3K9me3_HM_tet2.out_REP1+1)~log2(tet2.matched.data$tet2.out_REP1+1))
+lines(lo, col='red', lwd=1.5)
+
+smoothScatter(log2(tet2.matched.data$tet2.out_REP1+1), 
+              log2(tet2.matched.data$H3K27me3_HM_tet2.out_REP1+1),
+              xlab = "", ylab = "",
+              colramp = Lab.palette)
+mtext(side=1, text="RNA-Seq", line=2, cex = 0.6)
+mtext(side=2, text="ChIP-Seq of H3K27me3", line=2, cex = 0.6)
+lo <- lowess(log2(tet2.matched.data$H3K27me3_HM_tet2.out_REP1+1)~log2(tet2.matched.data$tet2.out_REP1+1))
+lines(lo, col='red', lwd=1.5)
+
+dev.off()
+
+```
+
+
+```{r}
+jpeg("../../figures/RNAseq-ChIPseq-cor-rank.jpeg", width = 170, height = 100,units = "mm" , res = 500)
+par(mfrow=c(2,3))
+par(mar = c(3, 3, 1.5, 1))
+Lab.palette <- colorRampPalette(c("white", blues9), space = "Lab")
+smoothScatter(rank(tet2.matched.data$tet2.out_REP1), 
+              rank(tet2.matched.data$H3K4me1_HM_tet2.out_REP2),
+              xlab = "", ylab = "",
+              colramp = Lab.palette)
+mtext(side=1, text="RNA-Seq", line=2, cex = 0.6)
+mtext(side=2, text="ChIP-Seq of H3K4me1", line=2, cex = 0.6)
+lo <- lowess(rank(tet2.matched.data$H3K4me1_HM_tet2.out_REP2)~rank(tet2.matched.data$tet2.out_REP1))
+lines(lo, col='red', lwd=1.5)
+
+smoothScatter(rank(tet2.matched.data$tet2.out_REP1), 
+              rank(tet2.matched.data$H3K4me3_HM_tet2.out_REP2),
+              xlab = "", ylab = "",
+              colramp = Lab.palette)
+mtext(side=1, text="RNA-Seq", line=2, cex = 0.6)
+mtext(side=2, text="ChIP-Seq of H3K4me3", line=2, cex = 0.6)
+lo <- lowess(rank(tet2.matched.data$H3K4me3_HM_tet2.out_REP2)~rank(tet2.matched.data$tet2.out_REP1))
+lines(lo, col='red', lwd=1.5)
+
+smoothScatter(rank(tet2.matched.data$tet2.out_REP1), 
+              rank(tet2.matched.data$H3K27ac_HM_tet2.out_REP2),
+              xlab = "", ylab = "",
+              colramp = Lab.palette)
+mtext(side=1, text="RNA-Seq", line=2, cex = 0.6)
+mtext(side=2, text="ChIP-Seq of H3K27ac", line=2, cex = 0.6)
+lo <- lowess(rank(tet2.matched.data$H3K27ac_HM_tet2.out_REP2)~rank(tet2.matched.data$tet2.out_REP1))
+lines(lo, col='red', lwd=1.5)
+
+smoothScatter(rank(tet2.matched.data$tet2.out_REP1), 
+              rank(tet2.matched.data$H3K36me3_HM_tet2.out_REP2),
+              xlab = "", ylab = "",
+              colramp = Lab.palette)
+mtext(side=1, text="RNA-Seq", line=2, cex = 0.6)
+mtext(side=2, text="ChIP-Seq of H3K36me3", line=2, cex = 0.6)
+lo <- lowess(rank(tet2.matched.data$H3K36me3_HM_tet2.out_REP2)~rank(tet2.matched.data$tet2.out_REP1))
+lines(lo, col='red', lwd=1.5)
+
+smoothScatter(rank(tet2.matched.data$tet2.out_REP1), 
+              rank(tet2.matched.data$H3K9me3_HM_tet2.out_REP1),
+              xlab = "", ylab = "",
+              colramp = Lab.palette)
+mtext(side=1, text="RNA-Seq", line=2, cex = 0.6)
+mtext(side=2, text="ChIP-Seq of H3K9me3", line=2, cex = 0.6)
+lo <- lowess(rank(tet2.matched.data$H3K9me3_HM_tet2.out_REP1)~rank(tet2.matched.data$tet2.out_REP1))
+lines(lo, col='red', lwd=1.5)
+
+smoothScatter(rank(tet2.matched.data$tet2.out_REP1), 
+              rank(tet2.matched.data$H3K27me3_HM_tet2.out_REP1),
+              xlab = "", ylab = "",
+              colramp = Lab.palette)
+mtext(side=1, text="RNA-Seq", line=2, cex = 0.6)
+mtext(side=2, text="ChIP-Seq of H3K27me3", line=2, cex = 0.6)
+lo <- lowess(rank(tet2.matched.data$H3K27me3_HM_tet2.out_REP1)~rank(tet2.matched.data$tet2.out_REP1))
+lines(lo, col='red', lwd=1.5)
+
+dev.off()
+
+```
+
+
+
+
+
+
+
+
+```{r, fig.height=4, fig.width=4}
+tet2.df <- readRDS("./data/tet2.df.rds")
+tet2.logfc <- tet2.df[,1:8]
+
+tet2.cor.logfc <- cor(tet2.logfc)
+#tet2.cor.res <- round(tet2.cor.res,2)
+library(ComplexHeatmap)
+library(circlize)
+cols <- colorRampPalette(c("darkblue","white","brown"))(20)
+Heatmap(tet2.cor.logfc,
+        col = circlize::colorRamp2(seq(from=-0.33, to=0.33, length.out = 20), cols), 
+        show_row_names=TRUE,
+        column_names_max_height = unit(6, "cm"),
+        column_names_gp = gpar(fontsize = 8),
+        row_names_max_width = unit(6, "cm"),
+        row_names_gp = gpar(fontsize = 8),
+        heatmap_legend_param = list(title="Cor", color_bar="continuous" ))
+```
+
+### 2. go enrichment
+```{r, fig.width=10, fig.height=10}
+tet2.final.df <- readRDS("./data/tet2.final.df.rds")
+write.csv(tet2.final.df, file = "./data/tet2.final.df.csv")
+write.csv(tet2.final.df, file = "../../tables/tet2.final.df.csv")
+#library("clusterProfiler")
+library(ggplot2)
+library(gProfileR)
+library(org.Mm.eg.db)
+tet2.top5df <- tet2.final.df[tet2.final.df$front<=5,]
+de.overgo <- gprofiler(rownames(tet2.top5df), organism = "mmusculus", 
+                       ordered_query = F, significant = T, exclude_iea = F, underrep = F,
+                       evcodes = F, region_query = F, max_p_value = 0.05, min_isect_size = 0, 
+                       correction_method = "fdr", hier_filtering =  "moderate", domain_size = "annotated",
+                       numeric_ns = "", png_fn = NULL, include_graph = F, src_filter = "GO")
+
+
+write.csv(de.overgo, file = "../../tables/top5_front_go.csv")
+
+
+top10 <- de.overgo[order(de.overgo$p.value), ][1:10,]
+g <- ggplot(data=top10, aes(x=reorder(term.name, -p.value), y=overlap.size,fill=p.value)) +
+  geom_bar(stat="identity")+
+  scale_fill_gradient2(mid='red', high='blue', space='Lab')+
+  labs(title="GO enrichment",
+       x ="GO terms", y = "number of genes", fill = "P value")+
+  theme(plot.title = element_text(hjust = 0.5, size = 12))+
+  coord_flip()
+ggsave(g, filename = "../../figures/top5_go_10.pdf", width = 6, height = 2)
+goview(top10)
+```
+
+### 3. heatmap
+```{r, fig.width=6, fig.height=6}
+tet2.final.df <- readRDS("./data/tet2.final.df.rds")
+tet2.front1 <- tet2.final.df[tet2.final.df$front<=1,][, colnames(tet2.final.df)%in%c("RNAseq.log2FoldChange", "z.H3K27me3", "z.H3K9me3","z.H3K4me1","z.H3K27ac","z.H3K4me3","z.H3K36me3")]
+
+library(ComplexHeatmap)
+library(circlize)
+Heatmap(tet2.front1[,1], name = "lFC.RNAseq",  width = unit(5, "mm"),col = colorRamp2(c(-4,-2,0,2, 4), c("blue","lightblue", "white","pink","red")),km = 2)+
+  Heatmap(as.matrix(tet2.front1[,-1]),name = "Z score",col = colorRamp2(c(-4,-2, 0,2,4), c("blue","lightblue", "white","pink","red")))
+
+pdf("../../figures/top1gene_heatmap.pdf", width = 4.5, height = 4)
+Heatmap(tet2.front1[,1], name = "lFC.RNAseq",  width = unit(5, "mm"),col = colorRamp2(c(-4,-2,0,2, 4), c("blue","lightblue", "white","pink","red")),km = 2)+
+  Heatmap(as.matrix(tet2.front1[,-1]),name = "Z score",col = colorRamp2(c(-4,-2, 0,2,4), c("blue","lightblue", "white","pink","red")))
+dev.off()
+
+```
+
+
+
+
+
+
+
+
+## do benchmark
+compare the integrative results with RNA-Seq alone or ChIP-Seq alone
+```{r}
+# number of genes per front
+library("dplyr")
+a <- tet2.final.df %>%
+  group_by(front) %>%
+  summarize(n())
+a <- as.data.frame(a)
+plot(a$`n()`, 
+     xlab = "no.fronts", ylab = "no.genes", main= "")
+
+```
+a
+
+```{r}
+library(gProfileR)
+z <- tet2.final.df
+overgo <- gprofiler(as.character(unique(z[z$front<=10,]$genes)), organism = "mmusculus", 
+                    ordered_query = F, significant = T, exclude_iea = F, underrep = F,
+                    evcodes = F, region_query = F, max_p_value = 0.05, min_isect_size = 0, 
+                    correction_method = "fdr", hier_filtering =  "none", domain_size = "annotated",
+                    numeric_ns = "", png_fn = NULL, include_graph = F, src_filter = "GO:BP")
+```
+
+
+```{r}
+library(gProfileR)
+library(ggplot2)
+
+
+go.data <- get(load(file = "./data/go.RData"))
+go.dm <- go.data[go.data$TERM == "embryonic digestive tract morphogenesis", ]
+gene.dm <- unlist(strsplit(x = go.dm$genes, split = '\\,'))
+gene.dm <- unique(gene.dm[!gene.dm%in%"NA"])
+
+go.pr <- go.data[go.data$TERM == "keratinocyte development", ]
+gene.pr <- unlist(strsplit(x = go.pr$genes, split = '\\,'))
+gene.pr <- unique(gene.pr[!gene.pr%in%"NA"])
+
+
+
+
+
+
+gene.target <- unique(c(gene.pr,gene.dm))
+
+fc <- function(x){
+  overlap <- intersect(gene.target, x)
+  recall <- length(overlap)/length(x)
+  return(recall)
+}
+
+tet2.final.df$genes <- rownames(tet2.final.df)
+recall <- aggregate(tet2.final.df[tet2.final.df$front<=20,]$genes, by=list(tet2.final.df[tet2.final.df$front<=20,]$front), FUN=fc)
+
+plot(as.numeric(recall$x))
+
+```
+
+```{r, fig.height=5, fig.width=6}
+go.rp <- go.data[go.data$TERM == "limb morphogenesis", ]
+gene.rp <- unlist(strsplit(x = go.rp$genes, split = '\\,'))
+gene.rp <- unique(gene.rp[!gene.rp%in%"NA"])
+gene.target <- gene.rp
+
+results <- tet2.final.df
+results$genes <- rownames(tet2.final.df)
+
+fc <- function(x){
+  overlap <- intersect(gene.target, x)
+  recall <- length(overlap)/length(x)
+  return(recall)
+}
+
+results2 <- read.csv("./data/btx356_supspreadsheet3_tet2_knockout_data.csv", header = TRUE, stringsAsFactors = FALSE) 
+
+
+qval.RNAseq <- read.csv(file = "./data/tet2_sleuth_lrt_gene.csv", header = TRUE, stringsAsFactors = FALSE)
+rank_by_qval.RNAseq <- qval.RNAseq[with(qval.RNAseq, order(abs(qval), decreasing = TRUE)), ]
+
+vsRNAseq <- data.frame(rank=c(118,365,814,1554,2631,4104,5912,7960,10028),
+                       pareto=c(fc(unique(results[results$front<=2,]$genes)),
+                                fc(unique(results[results$front<=3,]$genes)),
+                                fc(unique(results[results$front<=4,]$genes)),
+                                fc(unique(results[results$front<=5,]$genes)),
+                                fc(unique(results[results$front<=6,]$genes)),
+                                fc(unique(results[results$front<=7,]$genes)),
+                                fc(unique(results[results$front<=8,]$genes)),
+                                fc(unique(results[results$front<=9,]$genes)),
+                                fc(unique(results[results$front<=10,]$genes))),
+                       RNAseq = c(fc(unique(rank_by_qval.RNAseq$ext_gene)[1:118]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:365]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:814]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:1554]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:2631]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:4104]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:5912]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:7960]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:10028])))
+plot(vsRNAseq$rank,vsRNAseq$RNAseq,xlab = "top ranked genes", ylab = "", main= "GO term: limb morphogenesis", ylim =c(0,0.04),pch=10)
+lines(vsRNAseq$rank,vsRNAseq$RNAseq, type="l", lwd=1.5) 
+points(vsRNAseq$rank, vsRNAseq$pareto, col='red', pch=1) 
+points(length(unique(results2$gene.symbol)),fc(unique(results2$gene.symbol)), pch=2, col="blue" )
+lines(vsRNAseq$rank,vsRNAseq$pareto,  type="l", lwd=1.5, col='red')
+legend(x=6500, y=0.04, legend=c( 'Pareto', 'Model.based', 'RNA-Seq'), col=c( 'red','blue','black'), cex = 0.8,pch=c(1,2,10),bty = "n")
+pdf("../../figures/go-limb-morphogenesis.pdf", width = 4.5, height = 4)
+plot(vsRNAseq$rank,vsRNAseq$RNAseq,xlab = "top ranked genes", ylab = "", main= "GO term: limb morphogenesis",ylim =c(0,0.04), pch=10)
+lines(vsRNAseq$rank,vsRNAseq$RNAseq, type="l", lwd=1.5) 
+points(vsRNAseq$rank, vsRNAseq$pareto, col='red', pch=1) 
+points(length(unique(results2$gene.symbol)),fc(unique(results2$gene.symbol)), pch=2, col="blue" )
+lines(vsRNAseq$rank,vsRNAseq$pareto,  type="l", lwd=1.5, col='red')
+legend(x=6500, y=0.04, legend=c( 'Pareto', 'Model.based', 'RNA-Seq'), col=c( 'red','blue','black'), cex = 0.8,pch=c(1,2,10),bty = "n")
+dev.off()
+```
+
+
+```{r, fig.height=5, fig.width=6}
+go.l <- go.data[go.data$TERM == "mammary gland formation", ]
+gene.l <- unlist(strsplit(x = go.l$genes, split = '\\,'))
+gene.l <- unique(gene.l[!gene.l%in%"NA"])
+gene.target <- gene.l
+
+results <- tet2.final.df
+results$genes <- rownames(tet2.final.df)
+
+fc <- function(x){
+  overlap <- intersect(gene.target, x)
+  recall <- length(overlap)/length(x)
+  return(recall)
+}
+
+results2 <- read.csv("./data/btx356_supspreadsheet3_tet2_knockout_data.csv", header = TRUE, stringsAsFactors = FALSE) 
+
+
+qval.RNAseq <- read.csv(file = "./data/tet2_sleuth_lrt_gene.csv", header = TRUE, stringsAsFactors = FALSE)
+rank_by_qval.RNAseq <- qval.RNAseq[with(qval.RNAseq, order(abs(qval), decreasing = TRUE)), ]
+
+vsRNAseq <- data.frame(rank=c(118,365,814,1554,2631,4104,5912,7960,10028),
+                       pareto=c(fc(unique(results[results$front<=2,]$genes)),
+                                fc(unique(results[results$front<=3,]$genes)),
+                                fc(unique(results[results$front<=4,]$genes)),
+                                fc(unique(results[results$front<=5,]$genes)),
+                                fc(unique(results[results$front<=6,]$genes)),
+                                fc(unique(results[results$front<=7,]$genes)),
+                                fc(unique(results[results$front<=8,]$genes)),
+                                fc(unique(results[results$front<=9,]$genes)),
+                                fc(unique(results[results$front<=10,]$genes))),
+                       RNAseq = c(fc(unique(rank_by_qval.RNAseq$ext_gene)[1:118]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:365]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:814]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:1554]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:2631]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:4104]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:5912]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:7960]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:10028])))
+plot(vsRNAseq$rank,vsRNAseq$RNAseq,xlab = "top ranked genes", ylab = "", main= "GO term: mammary gland formation",ylim =c(0,0.01), pch=10)
+lines(vsRNAseq$rank,vsRNAseq$RNAseq, type="l", lwd=1.5)
+points(vsRNAseq$rank, vsRNAseq$pareto, col='red', pch=1) 
+points(length(unique(results2$gene.symbol)),fc(unique(results2$gene.symbol)), pch=2, col="blue" )
+lines(vsRNAseq$rank,vsRNAseq$pareto, type="l", lwd=1.5, col='red')
+legend(x=6500, y=0.01, legend=c( 'Pareto', 'Model.based', 'RNA-Seq'), col=c( 'red','blue','black'), cex = 0.8,pch=c(1,2,10),bty = "n")
+
+pdf("../../figures/go-mammary-gland-formation.pdf", width = 4.5, height = 4)
+plot(vsRNAseq$rank,vsRNAseq$RNAseq,xlab = "top ranked genes", ylab = "", main= "GO term: mammary gland formation",ylim =c(0,0.01), pch=10)
+lines(vsRNAseq$rank,vsRNAseq$RNAseq, type="l", lwd=1.5)
+points(vsRNAseq$rank, vsRNAseq$pareto, col='red', pch=1) 
+points(length(unique(results2$gene.symbol)),fc(unique(results2$gene.symbol)), pch=2, col="blue" )
+lines(vsRNAseq$rank,vsRNAseq$pareto, type="l", lwd=1.5, col='red')
+legend(x=6500, y=0.01, legend=c( 'Pareto', 'Model.based', 'RNA-Seq'), col=c( 'red','blue','black'), cex = 0.8,pch=c(1,2,10),bty = "n")
+dev.off()
+
+```
+
+
+
+#### combined benchmark plot
+```{r}
+jpeg("../../figures/benchmark.jpeg", width = 170, height = 150,units = "mm" , res = 500)
+par(mfrow=c(2,2))
+par(mar = c(4, 3, 3, 3))
+go.data <- get(load(file = "./data/go.RData"))
+go.rp <- go.data[go.data$TERM == "neurogenesis", ]
+gene.rp <- unlist(strsplit(x = go.rp$genes, split = '\\,'))
+gene.rp <- unique(gene.rp[!gene.rp%in%"NA"])
+gene.target <- gene.rp
+
+results <- tet2.final.df
+results$genes <- rownames(tet2.final.df)
+
+
+fc <- function(x){
+  overlap <- intersect(gene.target, x)
+  recall <- length(overlap)/length(x)
+  return(recall)
+}
+
+results2 <- read.csv("./data/btx356_supspreadsheet3_tet2_knockout_data.csv", header = TRUE, stringsAsFactors = FALSE) 
+
+
+qval.RNAseq <- read.csv(file = "./data/tet2_sleuth_lrt_gene.csv", header = TRUE, stringsAsFactors = FALSE)
+rank_by_qval.RNAseq <- qval.RNAseq[with(qval.RNAseq, order(abs(qval), decreasing = TRUE)), ]
+
+vsRNAseq <- data.frame(rank=c(118,365,814,1554,2631,4104,5912,7960,10028),
+                       pareto=c(fc(unique(results[results$front<=2,]$genes)),
+                                fc(unique(results[results$front<=3,]$genes)),
+                                fc(unique(results[results$front<=4,]$genes)),
+                                fc(unique(results[results$front<=5,]$genes)),
+                                fc(unique(results[results$front<=6,]$genes)),
+                                fc(unique(results[results$front<=7,]$genes)),
+                                fc(unique(results[results$front<=8,]$genes)),
+                                fc(unique(results[results$front<=9,]$genes)),
+                                fc(unique(results[results$front<=10,]$genes))),
+                       RNAseq = c(fc(unique(rank_by_qval.RNAseq$ext_gene)[1:118]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:365]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:814]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:1554]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:2631]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:4104]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:5912]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:7960]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:10028])))
+plot(vsRNAseq$rank,vsRNAseq$RNAseq,xlab = "", ylab = "", main= "",ylim=c(0,0.15), pch=10)
+lines(vsRNAseq$rank,vsRNAseq$RNAseq, type="l", lwd=1.5) 
+points(vsRNAseq$rank, vsRNAseq$pareto, col='red', pch=1) 
+points(length(unique(results2$gene.symbol)),fc(unique(results2$gene.symbol)), pch=2, col="blue" )
+lines(vsRNAseq$rank,vsRNAseq$pareto, type="l", lwd=1.5, col='red')
+legend(x=6000, y=0.15, legend=c( 'Pareto', 'Model.based', 'RNAseq'), col=c( 'red','blue','black'), cex = 0.8,pch=c(1,2,10),bty = "n")
+mtext(side=1, text="top ranked genes", line=2)
+mtext(side=2, text="", line=1)
+mtext(side=3, text="GO term: neurogenesis", line=1)
+
+
+go.l <- go.data[go.data$TERM == "cardiac chamber development", ]
+gene.l <- unlist(strsplit(x = go.l$genes, split = '\\,'))
+gene.l <- unique(gene.l[!gene.l%in%"NA"])
+gene.target <- gene.l
+
+vsRNAseq <- data.frame(rank=c(118,365,814,1554,2631,4104,5912,7960,10028),
+                       pareto=c(fc(unique(results[results$front<=2,]$genes)),
+                                fc(unique(results[results$front<=3,]$genes)),
+                                fc(unique(results[results$front<=4,]$genes)),
+                                fc(unique(results[results$front<=5,]$genes)),
+                                fc(unique(results[results$front<=6,]$genes)),
+                                fc(unique(results[results$front<=7,]$genes)),
+                                fc(unique(results[results$front<=8,]$genes)),
+                                fc(unique(results[results$front<=9,]$genes)),
+                                fc(unique(results[results$front<=10,]$genes))),
+                       RNAseq = c(fc(unique(rank_by_qval.RNAseq$ext_gene)[1:118]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:365]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:814]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:1554]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:2631]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:4104]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:5912]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:7960]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:10028])))
+plot(vsRNAseq$rank,vsRNAseq$RNAseq,xlab = "", ylab = "", main= "",ylim =c(0,0.04), pch=10)
+lines(vsRNAseq$rank,vsRNAseq$RNAseq, type="l", lwd=1.5) 
+points(vsRNAseq$rank, vsRNAseq$pareto, col='red', pch=1) 
+points(length(unique(results2$gene.symbol)),fc(unique(results2$gene.symbol)), pch=2, col="blue" )
+lines(vsRNAseq$rank,vsRNAseq$pareto, type="l", lwd=1.5, col='red')
+legend(x=6000, y=0.04, legend=c( 'Pareto', 'Model.based', 'RNAseq'), col=c( 'red','blue','black'), cex = 0.8,pch=c(1,2,10),bty = "n")
+mtext(side=1, text="top ranked genes", line=2)
+mtext(side=2, text="", line=1)
+mtext(side=3, text="GO term: cardiac chamber development", line=1)
+
+go.l <- go.data[go.data$TERM == "mammary gland formation", ]
+gene.l <- unlist(strsplit(x = go.l$genes, split = '\\,'))
+gene.l <- unique(gene.l[!gene.l%in%"NA"])
+gene.target <- gene.l
+
+results <- tet2.final.df
+results$genes <- rownames(tet2.final.df)
+
+
+fc <- function(x){
+  overlap <- intersect(gene.target, x)
+  recall <- length(overlap)/length(x)
+  return(recall)
+}
+
+results2 <- read.csv("./data/btx356_supspreadsheet3_tet2_knockout_data.csv", header = TRUE, stringsAsFactors = FALSE) 
+
+
+qval.RNAseq <- read.csv(file = "./data/tet2_sleuth_lrt_gene.csv", header = TRUE, stringsAsFactors = FALSE)
+rank_by_qval.RNAseq <- qval.RNAseq[with(qval.RNAseq, order(abs(qval), decreasing = TRUE)), ]
+
+vsRNAseq <- data.frame(rank=c(118,365,814,1554,2631,4104,5912,7960,10028),
+                       pareto=c(fc(unique(results[results$front<=2,]$genes)),
+                                fc(unique(results[results$front<=3,]$genes)),
+                                fc(unique(results[results$front<=4,]$genes)),
+                                fc(unique(results[results$front<=5,]$genes)),
+                                fc(unique(results[results$front<=6,]$genes)),
+                                fc(unique(results[results$front<=7,]$genes)),
+                                fc(unique(results[results$front<=8,]$genes)),
+                                fc(unique(results[results$front<=9,]$genes)),
+                                fc(unique(results[results$front<=10,]$genes))),
+                       RNAseq = c(fc(unique(rank_by_qval.RNAseq$ext_gene)[1:118]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:365]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:814]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:1554]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:2631]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:4104]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:5912]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:7960]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:10028])))
+plot(vsRNAseq$rank,vsRNAseq$RNAseq,xlab = "", ylab = "", main= "",ylim =c(0,0.01), pch=10)
+lines(vsRNAseq$rank,vsRNAseq$RNAseq, type="l", lwd=1.5)
+points(vsRNAseq$rank, vsRNAseq$pareto, col='red', pch=1) 
+points(length(unique(results2$gene.symbol)),fc(unique(results2$gene.symbol)), pch=2, col="blue" )
+lines(vsRNAseq$rank,vsRNAseq$pareto, type="l", lwd=1.5, col='red')
+legend(x=6000, y=0.01, legend=c( 'Pareto', 'Model.based', 'RNA-Seq'), col=c( 'red','blue','black'), cex = 0.8,pch=c(1,2,10),bty = "n")
+mtext(side=1, text="top ranked genes", line=2)
+mtext(side=2, text="", line=1)
+mtext(side=3, text="GO term: mammary gland formation", line=1)
+
+
+go.rp <- go.data[go.data$TERM == "limb morphogenesis", ]
+gene.rp <- unlist(strsplit(x = go.rp$genes, split = '\\,'))
+gene.rp <- unique(gene.rp[!gene.rp%in%"NA"])
+gene.target <- gene.rp
+
+results <- tet2.final.df
+results$genes <- rownames(tet2.final.df)
+
+
+fc <- function(x){
+  overlap <- intersect(gene.target, x)
+  recall <- length(overlap)/length(x)
+  return(recall)
+}
+
+results2 <- read.csv("./data/btx356_supspreadsheet3_tet2_knockout_data.csv", header = TRUE, stringsAsFactors = FALSE) 
+
+
+qval.RNAseq <- read.csv(file = "./data/tet2_sleuth_lrt_gene.csv", header = TRUE, stringsAsFactors = FALSE)
+rank_by_qval.RNAseq <- qval.RNAseq[with(qval.RNAseq, order(abs(qval), decreasing = TRUE)), ]
+
+vsRNAseq <- data.frame(rank=c(118,365,814,1554,2631,4104,5912,7960,10028),
+                       pareto=c(fc(unique(results[results$front<=2,]$genes)),
+                                fc(unique(results[results$front<=3,]$genes)),
+                                fc(unique(results[results$front<=4,]$genes)),
+                                fc(unique(results[results$front<=5,]$genes)),
+                                fc(unique(results[results$front<=6,]$genes)),
+                                fc(unique(results[results$front<=7,]$genes)),
+                                fc(unique(results[results$front<=8,]$genes)),
+                                fc(unique(results[results$front<=9,]$genes)),
+                                fc(unique(results[results$front<=10,]$genes))),
+                       RNAseq = c(fc(unique(rank_by_qval.RNAseq$ext_gene)[1:118]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:365]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:814]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:1554]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:2631]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:4104]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:5912]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:7960]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:10028])))
+plot(vsRNAseq$rank,vsRNAseq$RNAseq,xlab = "", ylab = "", main= "",ylim =c(0,0.05), pch=10)
+lines(vsRNAseq$rank,vsRNAseq$RNAseq, type="l", lwd=1.5) 
+points(vsRNAseq$rank, vsRNAseq$pareto, col='red', pch=1) 
+points(length(unique(results2$gene.symbol)),fc(unique(results2$gene.symbol)), pch=2, col="blue" )
+lines(vsRNAseq$rank,vsRNAseq$pareto,  type="l", lwd=1.5, col='red')
+legend(x=6000, y=0.05, legend=c( 'Pareto', 'Model.based', 'RNA-Seq'), col=c( 'red','blue','black'), cex = 0.8,pch=c(1,2,10),bty = "n")
+mtext(side=1, text="top ranked genes", line=2)
+mtext(side=2, text="", line=1)
+mtext(side=3, text="GO term: limb morphogenesis", line=1)
+
+
+dev.off()
+
+
+
+
+```
+
+```{r}
+pdf("../../figures/benchmark--withannota.pdf", width = 8, height = 7 )
+par(mfrow=c(2,2))
+par(mar = c(4, 3, 3, 3))
+go.data <- get(load(file = "./data/go.RData"))
+go.rp <- go.data[go.data$TERM == "neurogenesis", ]
+gene.rp <- unlist(strsplit(x = go.rp$genes, split = '\\,'))
+gene.rp <- unique(gene.rp[!gene.rp%in%"NA"])
+gene.target <- gene.rp
+
+results <- tet2.final.df
+results$genes <- rownames(tet2.final.df)
+
+
+fc <- function(x){
+  overlap <- intersect(gene.target, x)
+  recall <- length(overlap)/length(x)
+  return(recall)
+}
+
+results2 <- read.csv("./data/btx356_supspreadsheet3_tet2_knockout_data.csv", header = TRUE, stringsAsFactors = FALSE) 
+
+
+qval.RNAseq <- read.csv(file = "./data/tet2_sleuth_lrt_gene.csv", header = TRUE, stringsAsFactors = FALSE)
+rank_by_qval.RNAseq <- qval.RNAseq[with(qval.RNAseq, order(abs(qval), decreasing = TRUE)), ]
+
+vsRNAseq <- data.frame(rank=c(118,365,814,1554,2631,4104,5912,7960,10028),
+                       pareto=c(fc(unique(results[results$front<=2,]$genes)),
+                                fc(unique(results[results$front<=3,]$genes)),
+                                fc(unique(results[results$front<=4,]$genes)),
+                                fc(unique(results[results$front<=5,]$genes)),
+                                fc(unique(results[results$front<=6,]$genes)),
+                                fc(unique(results[results$front<=7,]$genes)),
+                                fc(unique(results[results$front<=8,]$genes)),
+                                fc(unique(results[results$front<=9,]$genes)),
+                                fc(unique(results[results$front<=10,]$genes))),
+                       RNAseq = c(fc(unique(rank_by_qval.RNAseq$ext_gene)[1:118]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:365]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:814]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:1554]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:2631]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:4104]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:5912]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:7960]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:10028])))
+plot(vsRNAseq$rank,vsRNAseq$RNAseq,xlab = "", ylab = "", main= "",ylim=c(0,0.15), pch=10)
+lines(vsRNAseq$rank,vsRNAseq$RNAseq, type="l", lwd=1.5) 
+points(vsRNAseq$rank, vsRNAseq$pareto, col='red', pch=1) 
+points(length(unique(results2$gene.symbol)),fc(unique(results2$gene.symbol)), pch=2, col="blue" )
+lines(vsRNAseq$rank,vsRNAseq$pareto, type="l", lwd=1.5, col='red')
+legend(x=6000, y=0.15, legend=c( 'Pareto', 'Model.based', 'RNAseq'), col=c( 'red','blue','black'), cex = 0.8,pch=c(1,2,10),bty = "n")
+mtext(side=1, text="top ranked genes", line=2)
+mtext(side=2, text="enrichment score", line=2)
+mtext(side=3, text="GO term: neurogenesis", line=1)
+
+
+go.l <- go.data[go.data$TERM == "cardiac chamber development", ]
+gene.l <- unlist(strsplit(x = go.l$genes, split = '\\,'))
+gene.l <- unique(gene.l[!gene.l%in%"NA"])
+gene.target <- gene.l
+
+vsRNAseq <- data.frame(rank=c(118,365,814,1554,2631,4104,5912,7960,10028),
+                       pareto=c(fc(unique(results[results$front<=2,]$genes)),
+                                fc(unique(results[results$front<=3,]$genes)),
+                                fc(unique(results[results$front<=4,]$genes)),
+                                fc(unique(results[results$front<=5,]$genes)),
+                                fc(unique(results[results$front<=6,]$genes)),
+                                fc(unique(results[results$front<=7,]$genes)),
+                                fc(unique(results[results$front<=8,]$genes)),
+                                fc(unique(results[results$front<=9,]$genes)),
+                                fc(unique(results[results$front<=10,]$genes))),
+                       RNAseq = c(fc(unique(rank_by_qval.RNAseq$ext_gene)[1:118]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:365]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:814]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:1554]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:2631]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:4104]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:5912]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:7960]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:10028])))
+plot(vsRNAseq$rank,vsRNAseq$RNAseq,xlab = "", ylab = "", main= "",ylim =c(0,0.04), pch=10)
+lines(vsRNAseq$rank,vsRNAseq$RNAseq, type="l", lwd=1.5) 
+points(vsRNAseq$rank, vsRNAseq$pareto, col='red', pch=1) 
+points(length(unique(results2$gene.symbol)),fc(unique(results2$gene.symbol)), pch=2, col="blue" )
+lines(vsRNAseq$rank,vsRNAseq$pareto, type="l", lwd=1.5, col='red')
+legend(x=6000, y=0.04, legend=c( 'Pareto', 'Model.based', 'RNAseq'), col=c( 'red','blue','black'), cex = 0.8,pch=c(1,2,10),bty = "n")
+mtext(side=1, text="top ranked genes", line=2)
+mtext(side=2, text="enrichment score", line=2)
+mtext(side=3, text="GO term: cardiac chamber development", line=1)
+
+go.l <- go.data[go.data$TERM == "mammary gland formation", ]
+gene.l <- unlist(strsplit(x = go.l$genes, split = '\\,'))
+gene.l <- unique(gene.l[!gene.l%in%"NA"])
+gene.target <- gene.l
+
+results <- tet2.final.df
+results$genes <- rownames(tet2.final.df)
+
+
+fc <- function(x){
+  overlap <- intersect(gene.target, x)
+  recall <- length(overlap)/length(x)
+  return(recall)
+}
+
+results2 <- read.csv("./data/btx356_supspreadsheet3_tet2_knockout_data.csv", header = TRUE, stringsAsFactors = FALSE) 
+
+
+qval.RNAseq <- read.csv(file = "./data/tet2_sleuth_lrt_gene.csv", header = TRUE, stringsAsFactors = FALSE)
+rank_by_qval.RNAseq <- qval.RNAseq[with(qval.RNAseq, order(abs(qval), decreasing = TRUE)), ]
+
+vsRNAseq <- data.frame(rank=c(118,365,814,1554,2631,4104,5912,7960,10028),
+                       pareto=c(fc(unique(results[results$front<=2,]$genes)),
+                                fc(unique(results[results$front<=3,]$genes)),
+                                fc(unique(results[results$front<=4,]$genes)),
+                                fc(unique(results[results$front<=5,]$genes)),
+                                fc(unique(results[results$front<=6,]$genes)),
+                                fc(unique(results[results$front<=7,]$genes)),
+                                fc(unique(results[results$front<=8,]$genes)),
+                                fc(unique(results[results$front<=9,]$genes)),
+                                fc(unique(results[results$front<=10,]$genes))),
+                       RNAseq = c(fc(unique(rank_by_qval.RNAseq$ext_gene)[1:118]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:365]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:814]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:1554]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:2631]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:4104]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:5912]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:7960]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:10028])))
+plot(vsRNAseq$rank,vsRNAseq$RNAseq,xlab = "", ylab = "", main= "",ylim =c(0,0.01), pch=10)
+lines(vsRNAseq$rank,vsRNAseq$RNAseq, type="l", lwd=1.5)
+points(vsRNAseq$rank, vsRNAseq$pareto, col='red', pch=1) 
+points(length(unique(results2$gene.symbol)),fc(unique(results2$gene.symbol)), pch=2, col="blue" )
+lines(vsRNAseq$rank,vsRNAseq$pareto, type="l", lwd=1.5, col='red')
+legend(x=6000, y=0.01, legend=c( 'Pareto', 'Model.based', 'RNA-Seq'), col=c( 'red','blue','black'), cex = 0.8,pch=c(1,2,10),bty = "n")
+mtext(side=1, text="top ranked genes", line=2)
+mtext(side=2, text="enrichment score", line=2)
+mtext(side=3, text="GO term: mammary gland formation", line=1)
+
+
+go.rp <- go.data[go.data$TERM == "limb morphogenesis", ]
+gene.rp <- unlist(strsplit(x = go.rp$genes, split = '\\,'))
+gene.rp <- unique(gene.rp[!gene.rp%in%"NA"])
+gene.target <- gene.rp
+
+results <- tet2.final.df
+results$genes <- rownames(tet2.final.df)
+
+
+fc <- function(x){
+  overlap <- intersect(gene.target, x)
+  recall <- length(overlap)/length(x)
+  return(recall)
+}
+
+results2 <- read.csv("./data/btx356_supspreadsheet3_tet2_knockout_data.csv", header = TRUE, stringsAsFactors = FALSE) 
+
+
+qval.RNAseq <- read.csv(file = "./data/tet2_sleuth_lrt_gene.csv", header = TRUE, stringsAsFactors = FALSE)
+rank_by_qval.RNAseq <- qval.RNAseq[with(qval.RNAseq, order(abs(qval), decreasing = TRUE)), ]
+
+vsRNAseq <- data.frame(rank=c(118,365,814,1554,2631,4104,5912,7960,10028),
+                       pareto=c(fc(unique(results[results$front<=2,]$genes)),
+                                fc(unique(results[results$front<=3,]$genes)),
+                                fc(unique(results[results$front<=4,]$genes)),
+                                fc(unique(results[results$front<=5,]$genes)),
+                                fc(unique(results[results$front<=6,]$genes)),
+                                fc(unique(results[results$front<=7,]$genes)),
+                                fc(unique(results[results$front<=8,]$genes)),
+                                fc(unique(results[results$front<=9,]$genes)),
+                                fc(unique(results[results$front<=10,]$genes))),
+                       RNAseq = c(fc(unique(rank_by_qval.RNAseq$ext_gene)[1:118]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:365]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:814]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:1554]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:2631]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:4104]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:5912]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:7960]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:10028])))
+plot(vsRNAseq$rank,vsRNAseq$RNAseq,xlab = "", ylab = "", main= "",ylim =c(0,0.05), pch=10)
+lines(vsRNAseq$rank,vsRNAseq$RNAseq, type="l", lwd=1.5) 
+points(vsRNAseq$rank, vsRNAseq$pareto, col='red', pch=1) 
+points(length(unique(results2$gene.symbol)),fc(unique(results2$gene.symbol)), pch=2, col="blue" )
+lines(vsRNAseq$rank,vsRNAseq$pareto,  type="l", lwd=1.5, col='red')
+legend(x=6000, y=0.05, legend=c( 'Pareto', 'Model.based', 'RNA-Seq'), col=c( 'red','blue','black'), cex = 0.8,pch=c(1,2,10),bty = "n")
+mtext(side=1, text="top ranked genes", line=2)
+mtext(side=2, text="enrichment score", line=2)
+mtext(side=3, text="GO term: limb morphogenesis", line=1)
+
+
+
+dev.off()
+```
+

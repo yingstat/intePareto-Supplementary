@@ -1,0 +1,56 @@
+---
+title: "ChromHMM"
+author: "Yingying Cao"
+date: "2/26/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+## 1. Binarization
+Prepare a tab-delimited text file specifying the design file for the cell-mark-aligned read files
+```{r}
+wildtype <- data.frame(V1= rep("wildtype",6), V2=c("H3K4me1", "H3K4me3", "H3K9me3", "H3K27ac", "H3K27me3", "H3K36me3" ))
+wildtype$V3 <- paste0("wildtype",wildtype$V2,".bam")
+wildtype$V4 <- rep("wildtypeinput.bam",6)
+
+write.table(wildtype, file = "./data/tet2/chromhmm/wildtype.txt", sep = "\t",
+            row.names = FALSE, col.names = FALSE,quote=FALSE)
+
+tet2out <- data.frame(V1= rep("tet2out",6), V2=c("H3K4me1", "H3K4me3", "H3K9me3", "H3K27ac", "H3K27me3", "H3K36me3" ))
+tet2out$V3 <- paste0("tet2out",tet2out$V2,".bam")
+tet2out$V4 <- rep("tet2outinput.bam",6)
+
+write.table(tet2out, file = "./data/tet2/chromhmm/tet2out.txt", sep = "\t",
+            row.names = FALSE, col.names = FALSE,quote=FALSE)
+
+allcells <- rbind(wildtype, tet2out)
+
+write.table(allcells, file = "./data/tet2/chromhmm/allcells.txt", sep = "\t",
+            row.names = FALSE, col.names = FALSE,quote=FALSE)
+
+```
+since I use ensembl reference there is no corresponding chromosome-length file in the CHROMSIZES directory
+I have to prepare by myself
+```{bash}
+wget ftp://ftp.ensembl.org/pub/release-97/fasta/mus_musculus/dna/Mus_musculus.GRCm38.dna.toplevel.fa.gz
+
+cat ./data/Mus_musculus.GRCm38.dna.toplevel.fa | awk '$0 ~ ">" {if (NR > 1) {print c;} c=0;printf substr($0,2,100) "\t"; } $0 !~ ">" {c+=length($0);} END { print c; }' > ./data/ChromHMM/CHROMSIZES/GRCm38.txt
+```
+
+```{r, eval=FALSE}
+GRCm38 <- read.table("./data/ChromHMM/CHROMSIZES/GRCm38.txt")
+GRCm38 <- GRCm38[,c("V1","V5")]
+write.table(GRCm38, file = "./data/ChromHMM/CHROMSIZES/GRCm38.txt", sep = "\t",
+            row.names = FALSE, col.names = FALSE, quote=FALSE)
+```
+
+Execute BinarizeBam
+
+```{bash}
+java -Xmx10240m -jar /home/nfs_data/yingying/ChromHMM/ChromHMM.jar BinarizeBam /home/nfs_data/yingying/ChromHMM/CHROMSIZES/GRCm38.txt /home/nfs_data/yingying/merged/ /home/nfs_data/
+yingying/allcells.txt /home/nfs_data/yingying/chromhmm/
+
+java -Xmx10240m -jar /home/nfs_data/yingying/ChromHMM/ChromHMM.jar LearnModel -p 0 /home/nfs_data/yingying/chromhmm/ /home/nfs_data/yingying/chromhmm/ 10 GRCm38
+```

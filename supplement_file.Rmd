@@ -1,0 +1,347 @@
+---
+title: "Supplementary for intePareto: An R package for integrative analysis of RNA-Seq and ChIP-Seq data"
+author: "Yingying Cao, Simo Kitanovski, Daniel Hoffmann"
+output: 
+  pdf_document:
+    citation_package: biblatex
+    keep_tex: true
+    latex_engine: pdflatex
+    fig_caption: true
+fontsize: 10pt
+bibliography: ./reference.bib
+csl: ./bioinformatics.csl
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+A frequent question in biology is: How do the functions of different cell types differ? E.g.\ we may be interested in what the effect of a mutation or gene knockout is in terms of functional differences between wild type and mutant/knockout, or how cellular function changes between two developmental stages of a cell type. One way of understanding such functional difference is to characterize them at the level of differences in repertoires in active genes or suppressed genes. The characterization of differential gene expression is helpful in this respect, but even more expressive is the combination of evidence from different experiments, namely measurements of gene expression (RNA-Seq) and measurements of various histone modifications (ChIP-Seq) that allow assessment of activation or suppression state of genes. In our experience, this combination of information gives a clearer picture of the cellular function at the molecular level than using any of the information types alone.
+
+We have therefore developed the R package intePareto that allows such a combination of different types of sequencing data. The intePareto workflow starts with RNA-Seq and ChIP-Seq data for two different cell types or conditions. The ChIP-Seq data will in general comprise information on several histone modifications with activating or repressing function. The end product of intePareto is a list of genes prioritized according to congruence of changes of gene expression and histone modifications.
+
+In the following we demonstrate the technical workflow with the published dataset GSE48519 where a Tet2 knockout cell line is compared to the wild type  [@hon2014]. The raw data were downloaded from Gene Expression Omnibus. This set contains 4 RNA-Seq samples, 31 ChIP-Seq samples with histone modification mark of H3K4me1, H3K4me3, H3K9me3, H3K27ac, H3K27me3, H3K36me3 and control for Tet2 knockout and wild type mouse embryonic stem cells (mESCs) separately.
+
+### Preprocessing of RNA-Seq data and ChIP-Seq data
+
+The RNA-Seq data was first preprocessed by Kallisto [@bray2016], and ChIP-Seq data was preprocessed by BWA [@li2009a], Samtools [@li2009]. The meta data below gives an overview of the preprocessed files that are the input files for intePareto.
+
+```{r, message=FALSE, warning=FALSE}
+library(intePareto)
+```
+
+
+
+```{r, include=FALSE}
+load("./data/rna_meta.rda")
+load("./data/chip_meta.rda")
+```
+
+```{r}
+rna_meta
+```
+
+```{r}
+chip_meta[1:2,]
+```
+
+### 1. **match**: Match RNA-Seq and ChIP-Seq data on the gene level
+
+Take the meta data of the preprocessed RNA-Seq and ChIP-Seq data as input.
+The first step of intePareto is to match the RNA-Seq data and ChIP-Seq data on the gene level.
+There are two strategies available now to do the matching step: (1) highest - choose the maximum promoter abundance value among all the promoters as a representative of the ChIP-Seq signal for this gene. (2) weighted.mean - calculate the weighted mean of the abundance value of all the promoters to represent the ChIP-Seq signal for this gene. Here we choose "highest":
+
+
+```{r, eval=FALSE}
+library(intePareto)
+chip_meta_noH3K36me3 <- chip_meta[!chip_meta$mark%in%"H3K36me3",]
+res.1 <- doMatch(rnaMeta = rna_meta, # metadata of RNA-Seq
+                 chipMeta = chip_meta_noH3K36me3, # metadata or ChIP-Seq
+                 region = "promoter", # specify the region
+                 method = "highest", # specify the strategy to do the match
+                 ensemblDataset = "mmusculus_gene_ensembl" 
+                 # specify the dataset of corresponing species
+)
+chip_meta_H3K36me3 <- chip_meta[chip_meta$mark%in%"H3K36me3",]
+
+res.2 <- doMatch(rnaMeta = rna_meta, # metadata of RNA-Seq
+                 chipMeta = chip_meta_H3K36me3, # metadata or ChIP-Seq
+                 method = "highest", # we don't need this parameter if we choose 
+                 # genebody, but it doesn't matter if we choose
+                 region = "genebody", # specify the region
+                 ensemblDataset = "mmusculus_gene_ensembl" 
+                 # specify the dataset of corresponing species
+)
+res.1$matched.data <- merge(res.1$matched.data,
+                            res.2$matched.data)
+res.1$res.chip <- merge(res.1$res.chip,
+                        res.2$res.chip)
+res <- res.1
+```
+
+```{r, echo=FALSE, include=FALSE, eval=FALSE}
+saveRDS(res, file = "./data/tet2.res.rds")
+library(intePareto)
+chip_meta_noH3K36me3 <- chip_meta[!chip_meta$mark%in%"H3K36me3",]
+res.1 <- doMatch(rnaMeta = rna_meta, # metadata of RNA-Seq
+                 chipMeta = chip_meta_noH3K36me3, # metadata or ChIP-Seq
+                 region = "promoter", # specify the region
+                 method = "weighted.mean", # specify the strategy to do the match
+                 ensemblDataset = "mmusculus_gene_ensembl" 
+                 # specify the dataset of corresponing species
+)
+chip_meta_H3K36me3 <- chip_meta[chip_meta$mark%in%"H3K36me3",]
+
+res.2 <- doMatch(rnaMeta = rna_meta, # metadata of RNA-Seq
+                 chipMeta = chip_meta_H3K36me3, # metadata or ChIP-Seq
+                 method = "weighted.mean", # we don't need this parameter if we choose 
+                 # genebody, but it doesn't matter if we choose
+                 region = "genebody", # specify the region
+                 ensemblDataset = "mmusculus_gene_ensembl" 
+                 # specify the dataset of corresponing species
+)
+res.1$matched.data <- merge(res.1$matched.data,
+                            res.2$matched.data)
+res.1$res.chip <- merge(res.1$res.chip,
+                        res.2$res.chip)
+res <- res.1
+saveRDS(res, file = "./data/tet2.res.wmean.rds")
+```
+
+
+```{r, echo=FALSE, include=FALSE, eval=FALSE}
+chip_meta_no92736 <- chip_meta[!chip_meta$mark%in%c("H3K9me3","H3K27me3","H3K36me3"),]
+res.1 <- doMatch(rnaMeta = rna_meta, # metadata of RNA-Seq
+                 chipMeta = chip_meta_no92736, # metadata or ChIP-Seq
+                 region = "promoter", # specify the region
+                 method = "highest", # specify the strategy to do the match
+                 ensemblDataset = "mmusculus_gene_ensembl" 
+                 # specify the dataset of corresponing species
+)
+chip_meta_92736 <- chip_meta[chip_meta$mark%in%c("H3K9me3","H3K27me3","H3K36me3"),]
+
+res.2 <- doMatch(rnaMeta = rna_meta, # metadata of RNA-Seq
+                 chipMeta = chip_meta_92736, # metadata or ChIP-Seq
+                 method = "highest", # we don't need this parameter if we choose 
+                 # genebody, but it doesn't matter if we choose
+                 region = "genebody", # specify the region
+                 ensemblDataset = "mmusculus_gene_ensembl" 
+                 # specify the dataset of corresponing species
+)
+res.1$matched.data <- merge(res.1$matched.data,
+                            res.2$matched.data)
+res.1$res.chip <- merge(res.1$res.chip,
+                        res.2$res.chip)
+res <- res.1
+saveRDS(res, file = "./data/tet2.res.92736.genebody.rds")
+```
+
+
+
+```{r, echo=FALSE, message=FALSE}
+res <- readRDS("./data/tet2.res.rds")
+library(ComplexHeatmap)
+library(circlize)
+```
+
+Figure 1 shows the correlation matrix, the color represents the value of correlation coefficients of Spearman's rank correlation of all samples. From this figure we can see that RNA-Seq (wild.type_REP1, wild.type_REP2, tet2.out_REP1, tet2.out_REP2) positively correlate with active histone modification markers (H3K4me3, H3K27ac, H3K4me1, and H3K36me3), and negatively correlate with repressive histone modification markers (H3K27me3 and H3K9me3). This can confirm our match strategy works well for the match of RNA-Seq and ChIP-Seq data on the gene level. 
+
+
+```{r, fig.width=6, fig.height=6, echo=FALSE, fig.cap="Correlation of RNA-Seq and ChIP-Seq"}
+matched.data <- res$matched.data
+rownames(matched.data) <- matched.data$external_gene_name
+matched.data <- matched.data[,-1]
+matched.data <- matched.data[rowSums(matched.data>5) > 10,]
+# filter low regions to make sure the counts in each region is above 15 in at least half of the samples.
+cor.res <- cor(matched.data, method = "spearman")
+cols <- colorRampPalette(c("darkblue","white","brown"))(20)
+
+Heatmap(cor.res,
+        col = circlize::colorRamp2(seq(from=-1, to=1, length.out = 20), cols), 
+        show_row_names=TRUE,
+        column_names_max_height = unit(6, "cm"),
+        column_names_gp = gpar(fontsize = 8),
+        row_names_max_width = unit(6, "cm"),
+        row_names_gp = gpar(fontsize = 8),
+        heatmap_legend_param = list(title="Cor", color_bar="continuous" ))
+```
+
+
+\newpage
+
+### 2. **integration**: Integrate RNA-Seq and ChIP-Seq data by calculating logFoldChange and Z scores  
+
+After the match of RNA-Seq and ChIP-Seq at the gene level, the integration of these two types of data is conducted through the **doIntegration** function by calculating logFoldChange of RNA-Seq and ChIP-Seq and then calculate Z scores for each marker. The input of the function is a list result from **doMatch** function.   
+
+```{r, eval=FALSE}
+df_final <- doIntegration(res = res, # result list from "doMatch" function
+                          type = "apeglm", # shrinkage estimator, default is "apeglm"
+                          ref = "wild.type", # specifying the reference level
+                          apeAdapt = FALSE)
+```
+```{r, echo=FALSE, include=FALSE, eval=FALSE}
+saveRDS(df_final, file = "./data/tet2.df.rds")
+```
+
+The result of the second step from **doIntegration** function contains the logFoldChange of RNA-Seq and ChIP-Seq as well as the Z score of each mark for each gene (shown as the table below).  
+
+```{r, echo=FALSE}
+df_final <- readRDS(file = "./data/tet2.df.rds")
+library(knitr)
+kable(df_final[1:15,9:15], caption = "integration results")
+```
+
+
+
+\newpage
+### 3. **prioritization**: prioritization of genes based on Z scores with Pareto optimization  
+
+Take the Z scores of several different histone modifications as input, the prioritization of genes based on Z scores can be formulated as multiobjective optimization problem and solved with Pareto optimization [@ngatchou2005]. The aim of Pareto optimization method is to find the Pareto optimal trade-off (Pareto front) between conflicting objectives (such as minimizing Z score of H3K27me3 and maximizing z-score of H3K4me3 for each gene). The results of Pareto optimization method is a rank-ordering of the genes by the level of the congruent changes in RNA-Seq and ChIP-Seq (shown as table below).
+
+```{r, echo=FALSE}
+df_final <- df_final[-grep("^Gm", rownames(df_final)), ]
+df_final <- df_final[-grep("Rik$", rownames(df_final)), ]
+```
+
+
+```{r}
+nr.fronts <- 50 # choose a large number to include all the fronts
+objective <- data.frame(mark = c("z.H3K27ac", "z.H3K4me3", "z.H3K4me1",
+                                 "z.H3K36me3", "z.H3K9me3", "z.H3K27me3"), 
+                        obj=c("max","max","max","max","min","min"),
+                        stringsAsFactors=FALSE)
+res_final <- doPareto(df_final = df_final, 
+                      objective = objective, 
+                      nr.fronts = nr.fronts)
+
+```
+
+```{r, echo=FALSE, include=FALSE, eval=FALSE}
+saveRDS(res_final, file = "./data/tet2.final.df.rds")
+```
+
+
+```{r, echo=FALSE}
+library(knitr)
+kable(res_final[1:15,9:16], caption = "prioritization results")
+```
+
+
+\newpage
+
+### Compare our integrative results with other approach and RNA-Seq alone
+
+To evaluate the performance of our method we did the integrative analysis with a recent published the hierarchical Bayesian model-based clustering approach (model-based approach )[@Schafer2017] and analysis of RNA-Seq alone, a functional quality metric, enrichment score of interesting terms for each data set is used to do comparison research between our integrative approach, the model-based approach  and the analysis of RNA-Seq data alone. The enrichment score is defined as $N(G_i \cap G_r) \mid N(G_r)$, in which $G_i$ stands for the genes in the interesting GO terms, $G_r$ stands for the genes in the result of analysis. 
+
+Both our integrative approach and the model-based approach found that the genes in the final result or the top rank gene (intePareto) enriched in "limb morphogenesis" GO term [Figure 2], which is consist with results in a recently published research [@li2018]. Our approach also found genes in the top-ranked list enriched in "mammary gland formation" which is discussed in this review [@holliday2018]. This result will be hidden when RNA-Seq data alone was analyzed or the model-based approach was used. When compared to the model-based approach[@schafer2017], our method outperformed it by having comparable results at the top genes and offering more informative results by providing the rank-ordered list of the remaining genes. 
+
+
+```{r, echo=FALSE, fig.height=5, fig.width=11, fig.cap="Compare intePareto with another approach and RNAseq alone"}
+par(mfrow=c(1,2))
+
+go.data <- get(load(file = "./data/go.RData"))
+go.rp <- go.data[go.data$TERM == "neurogenesis", ]
+gene.rp <- unlist(strsplit(x = go.rp$genes, split = '\\,'))
+gene.rp <- unique(gene.rp[!gene.rp%in%"NA"])
+gene.target <- gene.rp
+
+results <- res_final
+results$genes <- rownames(res_final)
+
+
+fc <- function(x){
+  overlap <- intersect(gene.target, x)
+  recall <- length(overlap)/length(x)
+  return(recall)
+}
+
+results2 <- read.csv("./data/btx356_supspreadsheet3_tet2_knockout_data.csv", header = TRUE, stringsAsFactors = FALSE) 
+
+
+qval.RNAseq <- read.csv(file = "./data/tet2_sleuth_lrt_gene.csv", header = TRUE, stringsAsFactors = FALSE)
+rank_by_qval.RNAseq <- qval.RNAseq[with(qval.RNAseq, order(abs(qval), decreasing = TRUE)), ]
+
+vsRNAseq <- data.frame(rank=c(118,365,814,1554,2631,4104,5912,7960,10028),
+                       pareto=c(fc(unique(results[results$front<=2,]$genes)),
+                                fc(unique(results[results$front<=3,]$genes)),
+                                fc(unique(results[results$front<=4,]$genes)),
+                                fc(unique(results[results$front<=5,]$genes)),
+                                fc(unique(results[results$front<=6,]$genes)),
+                                fc(unique(results[results$front<=7,]$genes)),
+                                fc(unique(results[results$front<=8,]$genes)),
+                                fc(unique(results[results$front<=9,]$genes)),
+                                fc(unique(results[results$front<=10,]$genes))),
+                       RNAseq = c(fc(unique(rank_by_qval.RNAseq$ext_gene)[1:118]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:365]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:814]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:1554]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:2631]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:4104]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:5912]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:7960]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:10028])))
+plot(vsRNAseq$rank,vsRNAseq$RNAseq,xlab = "top ranked genes", ylab = "", main= "GO term: neurogenesis",ylim =c(0,0.15), pch=10)
+lines(vsRNAseq$rank,vsRNAseq$RNAseq, type="l", lwd=1.5) 
+points(vsRNAseq$rank, vsRNAseq$pareto, col='red', pch=1) 
+points(length(unique(results2$gene.symbol)),fc(unique(results2$gene.symbol)), pch=2, col="blue" )
+lines(vsRNAseq$rank,vsRNAseq$pareto, type="l", lwd=1.5, col='red')
+legend(x=6000, y=0.15, legend=c( 'Pareto', 'Model.based', 'RNAseq'), col=c( 'red','blue','black'), cex = 0.8,pch=c(1,2,10),bty = "n")
+
+# pdf("../../figures/go-neurogenesis.pdf", width = 4.5, height = 4)
+# plot(vsRNAseq$rank,vsRNAseq$RNAseq,xlab = "top ranked genes", ylab = "", main= "GO term: neurogenesis",ylim =c(0,0.15), pch=10)
+# lines(vsRNAseq$rank,vsRNAseq$RNAseq, type="l", lwd=1.5) 
+# points(vsRNAseq$rank, vsRNAseq$pareto, col='red', pch=1) 
+# points(length(unique(results2$gene.symbol)),fc(unique(results2$gene.symbol)), pch=2, col="blue" )
+# lines(vsRNAseq$rank,vsRNAseq$pareto, type="l", lwd=1.5, col='red')
+# legend(x=4000, y=0.15, legend=c( 'Pareto', 'Model.based', 'RNAseq'), col=c( 'red','blue','black'), cex = 0.8,pch=c(1,2,10),bty = "n")
+# dev.off()
+
+go.l <- go.data[go.data$TERM == "cardiac chamber development", ]
+gene.l <- unlist(strsplit(x = go.l$genes, split = '\\,'))
+gene.l <- unique(gene.l[!gene.l%in%"NA"])
+gene.target <- gene.l
+
+vsRNAseq <- data.frame(rank=c(118,365,814,1554,2631,4104,5912,7960,10028),
+                       pareto=c(fc(unique(results[results$front<=2,]$genes)),
+                                fc(unique(results[results$front<=3,]$genes)),
+                                fc(unique(results[results$front<=4,]$genes)),
+                                fc(unique(results[results$front<=5,]$genes)),
+                                fc(unique(results[results$front<=6,]$genes)),
+                                fc(unique(results[results$front<=7,]$genes)),
+                                fc(unique(results[results$front<=8,]$genes)),
+                                fc(unique(results[results$front<=9,]$genes)),
+                                fc(unique(results[results$front<=10,]$genes))),
+                       RNAseq = c(fc(unique(rank_by_qval.RNAseq$ext_gene)[1:118]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:365]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:814]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:1554]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:2631]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:4104]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:5912]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:7960]),
+                                  fc(unique(rank_by_qval.RNAseq$ext_gene)[1:10028])))
+plot(vsRNAseq$rank,vsRNAseq$RNAseq,xlab = "top ranked genes", ylab = "", main= "GO term: cardiac chamber development",ylim =c(0,0.05), pch=10)
+lines(vsRNAseq$rank,vsRNAseq$RNAseq, type="l", lwd=1.5) 
+points(vsRNAseq$rank, vsRNAseq$pareto, col='red', pch=1) 
+points(length(unique(results2$gene.symbol)),fc(unique(results2$gene.symbol)), pch=2, col="blue" )
+lines(vsRNAseq$rank,vsRNAseq$pareto, type="l", lwd=1.5, col='red')
+legend(x=6000, y=0.05, legend=c( 'Pareto', 'Model.based', 'RNAseq'), col=c( 'red','blue','black'), cex = 0.8,pch=c(1,2,10),bty = "n")
+
+# pdf("../../figures/go-cardiac-chamber-development.pdf", width = 4.5, height = 4)
+# plot(vsRNAseq$rank,vsRNAseq$RNAseq,xlab = "top ranked genes", ylab = "", main= "GO term: cardiac chamber development",ylim =c(0,0.05), pch=10)
+# lines(vsRNAseq$rank,vsRNAseq$RNAseq, type="l", lwd=1.5) 
+# points(vsRNAseq$rank, vsRNAseq$pareto, col='red', pch=1) 
+# points(length(unique(results2$gene.symbol)),fc(unique(results2$gene.symbol)), pch=2, col="blue" )
+# lines(vsRNAseq$rank,vsRNAseq$pareto, type="l", lwd=1.5, col='red')
+# legend(x=4000, y=0.05, legend=c( 'Pareto', 'Model.based', 'RNAseq'), col=c( 'red','blue','black'), cex = 0.8,pch=c(1,2,10),bty = "n")
+# dev.off()
+
+```
+
+
+```{r}
+sessionInfo()
+```
+
+
+

@@ -1,0 +1,18 @@
+[0] Config.pm:340> INFO - This is Biber 2.4
+[0] Config.pm:343> INFO - Logfile is 'supplement_file.blg'
+[31] biber:287> INFO - === Fr Sep 11, 2020, 00:32:25
+[105] Biber.pm:348> INFO - Reading 'supplement_file.bcf'
+[218] Biber.pm:742> INFO - Found 10 citekeys in bib section 0
+[294] Biber.pm:3151> INFO - Processing section 0
+[705] Biber.pm:3308> INFO - Looking for bibtex format file './reference.bib' for section 0
+[717] bibtex.pm:1113> INFO - Decoding LaTeX character macros into UTF-8
+[729] bibtex.pm:974> INFO - Found BibTeX data source './reference.bib'
+[817] Utils.pm:147> WARN - Possible typo (case mismatch) between citation and datasource keys: 'Schafer2017' and 'schafer2017' in file './reference.bib'
+[839] Utils.pm:147> WARN - I didn't find a database entry for 'Schafer2017' (section 0)
+[923] UCollate.pm:65> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[923] UCollate.pm:65> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
+[923] Biber.pm:3028> INFO - Sorting list 'nty/global' of type 'entry' with scheme 'nty' and locale 'en-US'
+[923] Biber.pm:3032> INFO - No sort tailoring available for locale 'en-US'
+[968] bbl.pm:519> INFO - Writing 'supplement_file.bbl' with encoding 'UTF-8'
+[1004] bbl.pm:615> INFO - Output to supplement_file.bbl
+[1004] Biber.pm:109> INFO - WARNINGS: 2

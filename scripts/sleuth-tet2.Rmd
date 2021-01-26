@@ -1,0 +1,115 @@
+---
+title: "Sleuth tet2"
+author: "yingying"
+output: pdf_document
+---
+  
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(root.dir = "./")
+```
+
+
+* Input:  
+  
+  * RNA-Seq fastq files:
+  * preprocessed with Trimmomatic "./scripts/clean.s", parameters and tools used can 
+be seen in the shell script.
+* clean RNA-Seq data was quantified with pseudo-aligner Kallisto "./scripts/cleankallisto.s"
+an important feature of kallisto is that it outputs bootstraps along with the estimates of transcript abundances, which can serve as proxies for technical replicates, and thus allowing for an ascertainment of the variability in estimates due to random processes underlying RNA-Seq as well as the statistical procedure of read assignment.
+
+* Goal:   
+  * 1. to get the gene-level TPM expression value 
+* 2. to find and visualize the differential expressed genes in volcano plot.
+
+
+
+## Preparations for the sleuth analysis PH
+
+```{r}
+# load required packages
+# devtools::install_github("pachterlab/sleuth")
+suppressMessages({
+  library("biomaRt")
+  library("sleuth")
+})
+```
+
+
+```{r}
+# create an ausillary table that describes the experimental design and the relationship between the kallisto directories and the samples
+load("./data/rna_meta.rda")
+mapping.file <- data.frame(sample = rna_meta$SRR, 
+                           condition = rna_meta$condition,
+                           stringsAsFactors = FALSE)
+
+
+# append a new column to describe the path of the kallisto quantifications
+mapping.file$path <- paste("./data/tet2/kallisto/output", mapping.file$sample, sep = '')
+
+
+# create the mapping table describing the matching relationship between transcripts and the associated genes. There are other ways through manipulating gtf and gff annotation files to get this table. 
+ensembl <- biomaRt::useMart(biomart = "ENSEMBL_MART_ENSEMBL", 
+                            host = "www.ensembl.org")
+mart <- biomaRt::useMart(biomart = "ENSEMBL_MART_ENSEMBL",
+                         dataset = "mmusculus_gene_ensembl", 
+                         host="www.ensembl.org")
+
+transcript2gene <- biomaRt::getBM(attributes = c("ensembl_transcript_id_version", 
+                                                 "ensembl_gene_id", 
+                                                 "external_gene_name"), mart = mart)
+
+
+# rename the columns of the data.frame transcript2gene to 
+# meet the sleuth's requirements. Inspect the final data.frame by clicking 
+# on it via the Environment tab.
+colnames(transcript2gene) <- c("target_id", "ens_gene", "ext_gene")
+
+```
+
+
+
+## gene-level tpms output 
+
+```{r}
+# 1. First we prepare for the sleuth analysis by providing the Kallisto output,
+
+s2c <- mapping.file
+
+sleuth.obj <- sleuth_prep(sample_to_covariates = s2c, 
+                          target_mapping = transcript2gene, 
+                          extra_bootstrap_summary = TRUE,
+                          read_bootstrap_tpm = TRUE, 
+                          aggregation_column = 'ens_gene',
+                          gene_mode = TRUE,
+                          num_cores = 4)
+sleuth.obj$gene_mode
+
+## gene-level TPM matrix 
+
+tpms <- sleuth_to_matrix(sleuth.obj, "obs_norm", "tpm")
+# check the distribution of tpms in all the samples
+par(mfrow=c(1,4))
+for (i in 1:4) {
+  hist(log2(tpms[,i]), breaks = 100)
+  
+}
+
+tpms <- as.data.frame(tpms)
+tpms$ens_gene <- rownames(tpms)
+tpms$ext_gene <- sleuth.obj$target_mapping$ext_gene[match(tpms$ens_gene, sleuth.obj$target_mapping$ens_gene)]
+rownames(tpms) <- NULL
+write.csv(tpms, file = "./results/tpms_gene.csv", row.names = FALSE)
+# filtering on the transcript TPM values (threshold 1 TPM)
+# we only trust the gene's quantification value when all the samples values > 1 TPM
+# whether to use all samples or half samples > 1 TPM
+# if we use half samples genes like "0.00000000	0.00000000	1.172197	1.43116378	ENSMUSG00000029499	Pxmp2" will have huge logFC, if we use all samples genes like "3.04220919	7.90331887	1.172862	0.86115011	ENSMUSG00000039958	Etfbkmt" will be ignored for further analysis.
+
+ind <- rowSums(tpms[,1:4]>=1) >= 4
+
+tpms <- tpms[ind,]
+write.csv(tpms, file = "./results/tpms_gene_1tpm.csv", row.names = FALSE)
+
+```
+
+

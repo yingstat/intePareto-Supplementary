@@ -1,0 +1,437 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 2.6 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \sortlist[entry]{nty/global}
+    \entry{andrews2010fastqc}{misc}{}
+      \true{moreauthor}
+      \name{author}{1}{}{%
+        {{hash=e66026ce6d26f325615b05149f4d10a9}{%
+           family={Andrews},
+           family_i={A\bibinitperiod},
+           given={Simon},
+           given_i={S\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Babraham Bioinformatics, Babraham Institute, Cambridge, United Kingdom}%
+      }
+      \strng{namehash}{8c37cae9b47fc326001c7ed7bac92a65}
+      \strng{fullhash}{8c37cae9b47fc326001c7ed7bac92a65}
+      \field{sortinit}{A}
+      \field{sortinithash}{b685c7856330eaee22789815b49de9bb}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{FastQC: a quality control tool for high throughput sequence data}
+      \field{year}{2010}
+    \endentry
+    \entry{bray2016}{article}{}
+      \name{author}{4}{}{%
+        {{hash=b799b09bccd3cfe1ed7b2f3ad888b593}{%
+           family={Bray},
+           family_i={B\bibinitperiod},
+           given={Nicolas\bibnamedelima L},
+           given_i={N\bibinitperiod\bibinitdelim L\bibinitperiod}}}%
+        {{hash=8848f22226e467c29408c4f2ec737a44}{%
+           family={Pimentel},
+           family_i={P\bibinitperiod},
+           given={Harold},
+           given_i={H\bibinitperiod}}}%
+        {{hash=f52951be5bd1190b2cccf503c7d57e54}{%
+           family={Melsted},
+           family_i={M\bibinitperiod},
+           given={Páll},
+           given_i={P\bibinitperiod}}}%
+        {{hash=1ee032a9471708ba39e310c625131ddc}{%
+           family={Pachter},
+           family_i={P\bibinitperiod},
+           given={Lior},
+           given_i={L\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Nature Publishing Group}%
+      }
+      \strng{namehash}{45fcee6226c0bded1bf6e903bc331eb5}
+      \strng{fullhash}{f742b8e907ee47089853f002cf10fb32}
+      \field{sortinit}{B}
+      \field{sortinithash}{4ecbea03efd0532989d3836d1a048c32}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Nature biotechnology}
+      \field{number}{5}
+      \field{title}{Near-optimal probabilistic RNA-seq quantification}
+      \field{volume}{34}
+      \field{year}{2016}
+      \field{pages}{525}
+      \range{pages}{1}
+    \endentry
+    \entry{holliday2018}{article}{}
+      \name{author}{5}{}{%
+        {{hash=b8e4e5780252239efa86e88bf83276a3}{%
+           family={Holliday},
+           family_i={H\bibinitperiod},
+           given={Holly},
+           given_i={H\bibinitperiod}}}%
+        {{hash=c09dfeaee154999677a29a2ee867ca62}{%
+           family={Baker},
+           family_i={B\bibinitperiod},
+           given={Laura\bibnamedelima A},
+           given_i={L\bibinitperiod\bibinitdelim A\bibinitperiod}}}%
+        {{hash=9825b81aa1183d847ccb5b38bc802890}{%
+           family={Junankar},
+           family_i={J\bibinitperiod},
+           given={Simon\bibnamedelima R},
+           given_i={S\bibinitperiod\bibinitdelim R\bibinitperiod}}}%
+        {{hash=fcdcedb89e3e8257437583498616eeb3}{%
+           family={Clark},
+           family_i={C\bibinitperiod},
+           given={Susan\bibnamedelima J},
+           given_i={S\bibinitperiod\bibinitdelim J\bibinitperiod}}}%
+        {{hash=6c16e170384df53d9151b07fcde64fb2}{%
+           family={Swarbrick},
+           family_i={S\bibinitperiod},
+           given={Alexander},
+           given_i={A\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {BioMed Central}%
+      }
+      \strng{namehash}{65d214f97a252e061b18837c1a709ab2}
+      \strng{fullhash}{dc405e277949b31da71dd55a41df358e}
+      \field{sortinit}{H}
+      \field{sortinithash}{82012198d5dfa657b8c4a168793268a6}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Breast Cancer Research}
+      \field{number}{1}
+      \field{title}{Epigenomics of mammary gland development}
+      \field{volume}{20}
+      \field{year}{2018}
+      \field{pages}{1\bibrangedash 11}
+      \range{pages}{11}
+    \endentry
+    \entry{hon2014}{article}{}
+      \true{moreauthor}
+      \name{author}{10}{}{%
+        {{hash=9b82212f4e356b05826de1b1aaf60833}{%
+           family={Hon},
+           family_i={H\bibinitperiod},
+           given={Gary\bibnamedelima C},
+           given_i={G\bibinitperiod\bibinitdelim C\bibinitperiod}}}%
+        {{hash=f7d02be3815f04c168d8151687c84d14}{%
+           family={Song},
+           family_i={S\bibinitperiod},
+           given={Chun-Xiao},
+           given_i={C\bibinithyphendelim X\bibinitperiod}}}%
+        {{hash=38b3020c78c9d6792c65510ac2e31ba7}{%
+           family={Du},
+           family_i={D\bibinitperiod},
+           given={Tingting},
+           given_i={T\bibinitperiod}}}%
+        {{hash=5eed74f94b0d3f1fd30e5d7d054c59e0}{%
+           family={Jin},
+           family_i={J\bibinitperiod},
+           given={Fulai},
+           given_i={F\bibinitperiod}}}%
+        {{hash=10dd62ac73767a40b05b08ec7f8de698}{%
+           family={Selvaraj},
+           family_i={S\bibinitperiod},
+           given={Siddarth},
+           given_i={S\bibinitperiod}}}%
+        {{hash=12e960f7295c3eab1c8ffc80249b552c}{%
+           family={Lee},
+           family_i={L\bibinitperiod},
+           given={Ah\bibnamedelima Young},
+           given_i={A\bibinitperiod\bibinitdelim Y\bibinitperiod}}}%
+        {{hash=bdefd055bd707442acc71741198cadfb}{%
+           family={Yen},
+           family_i={Y\bibinitperiod},
+           given={Chia-an},
+           given_i={C\bibinithyphendelim a\bibinitperiod}}}%
+        {{hash=c05e5d4d0653f59c6cdf05543f7b6923}{%
+           family={Ye},
+           family_i={Y\bibinitperiod},
+           given={Zhen},
+           given_i={Z\bibinitperiod}}}%
+        {{hash=3ba27d7ff066299d6b290d4beb399721}{%
+           family={Mao},
+           family_i={M\bibinitperiod},
+           given={Shi-Qing},
+           given_i={S\bibinithyphendelim Q\bibinitperiod}}}%
+        {{hash=9c8d9544aa66e7b6e9d326d2a71f7e56}{%
+           family={Wang},
+           family_i={W\bibinitperiod},
+           given={Bang-An},
+           given_i={B\bibinithyphendelim A\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Elsevier}%
+      }
+      \strng{namehash}{37ba896bd04591e4d6a65f94e154887f}
+      \strng{fullhash}{735e9a8114bcd7494c2e9d72c5e8f33f}
+      \field{sortinit}{H}
+      \field{sortinithash}{82012198d5dfa657b8c4a168793268a6}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Molecular cell}
+      \field{number}{2}
+      \field{title}{5mC oxidation by Tet2 modulates enhancer activity and timing of transcriptome reprogramming during differentiation}
+      \field{volume}{56}
+      \field{year}{2014}
+      \field{pages}{286\bibrangedash 297}
+      \range{pages}{12}
+    \endentry
+    \entry{li2009a}{article}{}
+      \name{author}{2}{}{%
+        {{hash=466d90849ccf7e74e32d338b7c35491d}{%
+           family={Li},
+           family_i={L\bibinitperiod},
+           given={Heng},
+           given_i={H\bibinitperiod}}}%
+        {{hash=517afe729b2eb59735ba80628d943bb0}{%
+           family={Durbin},
+           family_i={D\bibinitperiod},
+           given={Richard},
+           given_i={R\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Oxford University Press}%
+      }
+      \strng{namehash}{68b0c2c99236e02736a0ab4098e9a024}
+      \strng{fullhash}{68b0c2c99236e02736a0ab4098e9a024}
+      \field{sortinit}{L}
+      \field{sortinithash}{872351f18d0f736066eda0bf18bfa4f7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{bioinformatics}
+      \field{number}{14}
+      \field{title}{Fast and accurate short read alignment with Burrows--Wheeler transform}
+      \field{volume}{25}
+      \field{year}{2009}
+      \field{pages}{1754\bibrangedash 1760}
+      \range{pages}{7}
+    \endentry
+    \entry{li2009}{article}{}
+      \name{author}{9}{}{%
+        {{hash=466d90849ccf7e74e32d338b7c35491d}{%
+           family={Li},
+           family_i={L\bibinitperiod},
+           given={Heng},
+           given_i={H\bibinitperiod}}}%
+        {{hash=c23c544be69d5a11f41e88573fa31b66}{%
+           family={Handsaker},
+           family_i={H\bibinitperiod},
+           given={Bob},
+           given_i={B\bibinitperiod}}}%
+        {{hash=9230f619f70697545cc3d441515b3bc9}{%
+           family={Wysoker},
+           family_i={W\bibinitperiod},
+           given={Alec},
+           given_i={A\bibinitperiod}}}%
+        {{hash=773b22b5aaacf32d8c73f8bda3f26c01}{%
+           family={Fennell},
+           family_i={F\bibinitperiod},
+           given={Tim},
+           given_i={T\bibinitperiod}}}%
+        {{hash=c42a336d28e60e0158ab76e19b82bc1e}{%
+           family={Ruan},
+           family_i={R\bibinitperiod},
+           given={Jue},
+           given_i={J\bibinitperiod}}}%
+        {{hash=599684aecac812346c723706355c1f0f}{%
+           family={Homer},
+           family_i={H\bibinitperiod},
+           given={Nils},
+           given_i={N\bibinitperiod}}}%
+        {{hash=2ba433e428dec3ec900179ed16e29032}{%
+           family={Marth},
+           family_i={M\bibinitperiod},
+           given={Gabor},
+           given_i={G\bibinitperiod}}}%
+        {{hash=8adf88b4bd2c9785ddad5bfa05221f24}{%
+           family={Abecasis},
+           family_i={A\bibinitperiod},
+           given={Goncalo},
+           given_i={G\bibinitperiod}}}%
+        {{hash=517afe729b2eb59735ba80628d943bb0}{%
+           family={Durbin},
+           family_i={D\bibinitperiod},
+           given={Richard},
+           given_i={R\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Oxford University Press}%
+      }
+      \strng{namehash}{7de69ceef8abd6e58f52a4fffba20d8e}
+      \strng{fullhash}{2db18198f431b34c0ee9b220b8c477f5}
+      \field{sortinit}{L}
+      \field{sortinithash}{872351f18d0f736066eda0bf18bfa4f7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Bioinformatics}
+      \field{number}{16}
+      \field{title}{The sequence alignment/map format and SAMtools}
+      \field{volume}{25}
+      \field{year}{2009}
+      \field{pages}{2078\bibrangedash 2079}
+      \range{pages}{2}
+    \endentry
+    \entry{li2018}{article}{}
+      \true{moreauthor}
+      \name{author}{10}{}{%
+        {{hash=fd81853acdb66a971c271e27ba65e198}{%
+           family={Li},
+           family_i={L\bibinitperiod},
+           given={Rong},
+           given_i={R\bibinitperiod}}}%
+        {{hash=11b6c8c17a7c72e4bb72ce8eb25fadd6}{%
+           family={Zhou},
+           family_i={Z\bibinitperiod},
+           given={Yuan},
+           given_i={Y\bibinitperiod}}}%
+        {{hash=a65178d8d1cbbdd2a1300186ef83efd5}{%
+           family={Cao},
+           family_i={C\bibinitperiod},
+           given={Zeng},
+           given_i={Z\bibinitperiod}}}%
+        {{hash=5d07f51a51d9c2c1363bab089c022727}{%
+           family={Liu},
+           family_i={L\bibinitperiod},
+           given={Lin},
+           given_i={L\bibinitperiod}}}%
+        {{hash=c2bc38014ea579c03a7b364fc566f0ad}{%
+           family={Wang},
+           family_i={W\bibinitperiod},
+           given={Jinhuan},
+           given_i={J\bibinitperiod}}}%
+        {{hash=70f16c74d870404a31ec138dab9d602b}{%
+           family={Chen},
+           family_i={C\bibinitperiod},
+           given={Zizhen},
+           given_i={Z\bibinitperiod}}}%
+        {{hash=6556ee28400768d545de20c74c1adda1}{%
+           family={Xing},
+           family_i={X\bibinitperiod},
+           given={Wen},
+           given_i={W\bibinitperiod}}}%
+        {{hash=0efa667ff32038a4845e8978896d59e3}{%
+           family={Chen},
+           family_i={C\bibinitperiod},
+           given={Shi},
+           given_i={S\bibinitperiod}}}%
+        {{hash=f14a0b34c9fb71153159e984eac286f8}{%
+           family={Bai},
+           family_i={B\bibinitperiod},
+           given={Jie},
+           given_i={J\bibinitperiod}}}%
+        {{hash=6cfcbf74447159299d4bf2fd69281e8d}{%
+           family={Yuan},
+           family_i={Y\bibinitperiod},
+           given={Weiping},
+           given_i={W\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Elsevier}%
+      }
+      \strng{namehash}{1cf7c4fbe1839462d3f716dc2b3309f9}
+      \strng{fullhash}{67f6223c935475875520f7680851dd0e}
+      \field{sortinit}{L}
+      \field{sortinithash}{872351f18d0f736066eda0bf18bfa4f7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Stem cell reports}
+      \field{number}{1}
+      \field{title}{TET2 Loss Dysregulates the Behavior of Bone Marrow Mesenchymal Stromal Cells and Accelerates Tet2-/--Driven Myeloid Malignancy Progression}
+      \field{volume}{10}
+      \field{year}{2018}
+      \field{pages}{166\bibrangedash 179}
+      \range{pages}{14}
+    \endentry
+    \entry{ngatchou2005}{inproceedings}{}
+      \name{author}{3}{}{%
+        {{hash=45501af334796ecb46f43e4a77074a52}{%
+           family={Ngatchou},
+           family_i={N\bibinitperiod},
+           given={Patrick},
+           given_i={P\bibinitperiod}}}%
+        {{hash=6e80db74a7b8e38c877d09f2f063f8e7}{%
+           family={Zarei},
+           family_i={Z\bibinitperiod},
+           given={Anahita},
+           given_i={A\bibinitperiod}}}%
+        {{hash=9acf16d41d7ff5b979c7096dd753da93}{%
+           family={El-Sharkawi},
+           family_i={E\bibinithyphendelim S\bibinitperiod},
+           given={A},
+           given_i={A\bibinitperiod}}}%
+      }
+      \list{organization}{1}{%
+        {IEEE}%
+      }
+      \strng{namehash}{013edeb4b588fa07ea9064f87a9d8897}
+      \strng{fullhash}{013edeb4b588fa07ea9064f87a9d8897}
+      \field{sortinit}{N}
+      \field{sortinithash}{925374ca63e7594de7fafdb83e64d41d}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Proceedings of the 13th International Conference on, Intelligent Systems Application to Power Systems}
+      \field{title}{Pareto multi objective optimization}
+      \field{year}{2005}
+      \field{pages}{84\bibrangedash 91}
+      \range{pages}{8}
+    \endentry
+    \entry{schafer2017}{article}{}
+      \name{author}{3}{}{%
+        {{hash=72670cf668b6bad2a2aa214c9e4f14bc}{%
+           family={Schäfer},
+           family_i={S\bibinitperiod},
+           given={Martin},
+           given_i={M\bibinitperiod}}}%
+        {{hash=44729b958472e48d48f0409db542dde8}{%
+           family={Klein},
+           family_i={K\bibinitperiod},
+           given={Hans-Ulrich},
+           given_i={H\bibinithyphendelim U\bibinitperiod}}}%
+        {{hash=f593d7da75fdf7ddf9184f17437fba53}{%
+           family={Schwender},
+           family_i={S\bibinitperiod},
+           given={Holger},
+           given_i={H\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Oxford University Press}%
+      }
+      \strng{namehash}{12aa93688e750b4fa74a5ced656e0684}
+      \strng{fullhash}{12aa93688e750b4fa74a5ced656e0684}
+      \field{sortinit}{S}
+      \field{sortinithash}{fd1e7c5ab79596b13dbbb67f8d70fb5a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Bioinformatics}
+      \field{number}{20}
+      \field{title}{Integrative analysis of multiple genomic variables using a hierarchical Bayesian model}
+      \field{volume}{33}
+      \field{year}{2017}
+      \field{pages}{3220\bibrangedash 3227}
+      \range{pages}{8}
+    \endentry
+  \endsortlist
+  \missing{Schafer2017}
+\endrefsection
+\endinput
+
